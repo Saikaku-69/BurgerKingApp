@@ -32,7 +32,8 @@ struct GameView: View {
     @State private var playerPositionY:CGFloat = UIScreen.main.bounds.height-200
     @State private var playerFrame:CGFloat = 80
     @State private var playerRotation:Double = 0
-    @State private var playerOpacity: Double = 1.0
+    @State private var playerOpacity:Double = 1.0
+    @State private var playerAction:Bool = true
     //Create burger
     @State private var GetBurger:[Burger] = []
     
@@ -44,13 +45,13 @@ struct GameView: View {
     @State private var saveTimer: Timer?
     @State private var fallingTimer: Timer?
     @State private var createBurgerTimer: Timer?
+    @State private var knifeTimer: Timer?
     @State private var fallingSpeed:Double = 0.005
 //    @State private var knifeTimer: Timer?
     //ペナルティ階段
     @State private var hStackCount:CGFloat = 0
     @State private var knifeRotation: Double = 0
-//    @State private var knifeMove: Bool = false
-//    @State private var knifePosition:CGFloat = -100
+    @State private var knifeMove: Bool = false
     @State private var deadLine:CGFloat = UIScreen.main.bounds.height - 210
     //
     @State private var gameStartButton:Bool = true
@@ -155,6 +156,7 @@ struct GameView: View {
                                     playerPositionX.width += value.translation.width
                                 }
                         )
+                        .disabled(playerAction)
                     //main
                     Rectangle()
                         .fill(.red)
@@ -185,6 +187,8 @@ struct GameView: View {
                     gameStartButton = false
                     startGame()
                     bestScoreCalculate()
+                    knifeMove = true
+                    juziMove()
                 }) {
                     Text("ゲーム開始")
                         .foregroundColor(Color.white)
@@ -246,7 +250,7 @@ struct GameView: View {
         }
 //        let images = ["Burger","poo"]
 //        let randomImage = images.randomElement() ?? "Burger"
-        let randomX = CGFloat.random(in: Burger.burgerWidth/2...(gameScreenWidth-10))
+        let randomX = CGFloat.random(in: Burger.burgerWidth/2 + 30...(gameScreenWidth-40))
         
         let newItem = Burger(imageName: randomImage, burgerPosition:CGPoint(x:randomX,y:10))
         GetBurger.append(newItem)
@@ -276,6 +280,7 @@ struct GameView: View {
         }
     }
     private func startGame() {
+        playerAction = false
         saveTimer?.invalidate()
         countSaveTime()
         createBurgerTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
@@ -288,6 +293,7 @@ struct GameView: View {
             saveTimer?.invalidate()
             createBurgerTimer?.invalidate()
             fallingTimer?.invalidate()
+            playerAction = true
             bestScoreCalculate()
             GetBurger.removeAll()
             hStackCount = 0
@@ -296,6 +302,7 @@ struct GameView: View {
             gameSaveTime = 0.005
             deadLine = UIScreen.main.bounds.height-200
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                knifeTimer?.invalidate()
                 gameOver = true
             }
         }
@@ -359,9 +366,19 @@ struct GameView: View {
         //分别对应通知,错误和警告
         feedbackGenerator.notificationOccurred(.error)
     }
-//    private func playerDelect() {
-//
-//    }
+    private func juziMove() {
+        if knifeMove {
+            knifeTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
+                withAnimation(.linear(duration:0.5)) {
+                    knifeRotation += 720
+                }
+            }
+        } else {
+            withAnimation {
+                knifeRotation = 0
+            }
+        }
+    }
     private func ambulanceAction() {
         withAnimation(.linear(duration: 1)) {
             ambulancePositionX.width = playerPositionX.width + dragPositionX.width + 110
