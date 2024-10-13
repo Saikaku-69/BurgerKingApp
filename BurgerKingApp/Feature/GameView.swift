@@ -16,7 +16,10 @@ struct Burger:Identifiable {
     static var burgerWidth: CGFloat = 30
     static var burgerHeight: CGFloat = 30
 }
-
+struct Poo:Identifiable {
+    var id = UUID()
+    var pooPosition: CGPoint
+}
 struct GameView: View {
     @AppStorage("bestScoreKey") private var bestScore: Int = 0
     @AppStorage("bestSaveTimeKey") private var bestSaveTime: Double = 0
@@ -36,7 +39,7 @@ struct GameView: View {
     @State private var playerAction:Bool = true
     //Create burger
     @State private var GetBurger:[Burger] = []
-    
+    @State private var GetPoo:[Poo] = []
     //collision mainObject Size
     @State private var mainObWidth:CGFloat = 30
     @State private var mainObHeight:CGFloat = 5
@@ -46,6 +49,7 @@ struct GameView: View {
     @State private var fallingTimer: Timer?
     @State private var createBurgerTimer: Timer?
     @State private var knifeTimer: Timer?
+    @State private var pooTimer: Timer?
     @State private var fallingSpeed:Double = 0.005
 //    @State private var knifeTimer: Timer?
     //ペナルティ階段
@@ -172,6 +176,14 @@ struct GameView: View {
                         .frame(width:Burger.burgerWidth)
                         .position(item.burgerPosition)
                     }
+                    //poo
+                    ForEach(GetPoo) { poo in
+                        Image("poo")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width:Burger.burgerWidth)
+                        .position(poo.pooPosition)
+                    }
                 }
                 .frame(width: gameScreenWidth,
                        height: gameScreenHeight)
@@ -246,14 +258,31 @@ struct GameView: View {
         if randomNumber <= 90 {
             randomImage = "Burger"
         } else {
-            randomImage = "poo"
+            randomImage = "vagetable"
         }
 //        let images = ["Burger","poo"]
 //        let randomImage = images.randomElement() ?? "Burger"
         let randomX = CGFloat.random(in: Burger.burgerWidth/2 + 30...(gameScreenWidth-40))
-        
         let newItem = Burger(imageName: randomImage, burgerPosition:CGPoint(x:randomX,y:10))
         GetBurger.append(newItem)
+    }
+    //poo
+    private func createPoo() {
+        let newPoo = Poo(pooPosition:CGPoint(x:playerPositionX.width + dragPositionX.width + 10,
+                                             y:playerPositionY))
+        GetPoo.append(newPoo)
+    }
+    private func pooAction() {
+        pooTimer?.invalidate()
+        pooTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { _ in
+            for index in GetPoo.indices.reversed() {
+                if GetPoo[index].pooPosition.y <= UIScreen.main.bounds.height {
+                    GetPoo[index].pooPosition.y += 2
+                } else {
+                    GetPoo.remove(at: index)
+                }
+            }
+        }
     }
     //Falling
     private func falling() {
@@ -296,6 +325,7 @@ struct GameView: View {
             playerAction = true
             bestScoreCalculate()
             GetBurger.removeAll()
+            GetPoo.removeAll()
             hStackCount = 0
             ambulanceMove = true
             ambulanceAction()
@@ -341,7 +371,9 @@ struct GameView: View {
                     generateImpactFeedback(for: .medium)
                     score += 1
                     GetBurger.remove(at: index)
-                } else if itemName.imageName == "poo" {
+                    createPoo()
+                    pooAction()
+                } else if itemName.imageName == "vagetable" {
                     generateImpactFeedback(for: .heavy)
                     fallingSpeed = fallingSpeed/2
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
