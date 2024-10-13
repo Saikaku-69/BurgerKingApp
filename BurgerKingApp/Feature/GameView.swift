@@ -43,6 +43,8 @@ struct GameView: View {
     @State private var saveTimer: Timer?
     @State private var fallingTimer: Timer?
     @State private var createBurgerTimer: Timer?
+    @State private var gameTime:Double = 0.003
+    @State private var knifeTimer: Timer?
     //ペナルティ階段
     @State private var hStackCount:Int = 0
     @State private var knifeRotation: Double = 0
@@ -58,14 +60,14 @@ struct GameView: View {
             
             VStack {
                 HStack {
-                    Button(knifeMove ? "Stop" : "Start") {
-                        knifeMove.toggle()
-                        if knifeMove {
-                            knifeAnimation()
-                        } else {
-                            stopKinife()
-                        }
-                    }
+//                    Button(knifeMove ? "Stop" : "Start") {
+//                        knifeMove.toggle()
+//                        if knifeMove {
+//                            knifeAnimation()
+//                        } else {
+//                            stopKinife()
+//                        }
+//                    }
                 }
                 .frame(width: gameScreenWidth,height: 30)
                 //ゲームスクーリン
@@ -158,8 +160,7 @@ struct GameView: View {
                     Spacer()
                     Button(action: {
                         //リセット
-                        gameOver = false
-                        gameStartButton = true
+                        initialGame()
                     }) {
                         Text("Homeに戻る")
                             .foregroundColor(Color.white)
@@ -192,7 +193,7 @@ struct GameView: View {
     //Falling
     private func falling() {
         fallingTimer?.invalidate()
-        fallingTimer = Timer.scheduledTimer(withTimeInterval: 0.002, repeats: true) { _ in
+        fallingTimer = Timer.scheduledTimer(withTimeInterval: gameTime, repeats: true) { _ in
             for index in GetBurger.indices.reversed() {
                 if GetBurger[index].burgerPosition.y <= deadLine {
                     withAnimation(.linear) {
@@ -225,8 +226,17 @@ struct GameView: View {
             playerDelect()
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 gameOver = true
+                stopKinife()
             }
         }
+    }
+    private func initialGame() {
+        gameOver = false
+        gameStartButton = true
+        playerFrame = 80
+        playerRotation = 0
+        playerPositionX.width = UIScreen.main.bounds.width/2 - 30
+        playerPositionY = UIScreen.main.bounds.height-200
     }
     //判定
     private func collision() {
@@ -253,12 +263,13 @@ struct GameView: View {
             withAnimation(.linear(duration: 0.5).repeatForever(autoreverses: false)) {
                 knifeRotation += 360
             }
-            withAnimation(.linear(duration: 1).repeatForever(autoreverses: true)) {
+            withAnimation(.linear(duration: 0.5).repeatForever(autoreverses: true)) {
                 knifePosition += 200
             }
         }
     }
     private func stopKinife() {
+//        knifeTimer?.invalidate()
         knifeMove = false
         knifeRotation = 0
     }
