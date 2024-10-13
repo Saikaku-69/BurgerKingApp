@@ -51,11 +51,13 @@ struct GameView: View {
     @State private var knifeTimer: Timer?
     @State private var pooTimer: Timer?
     @State private var fallingSpeed:Double = 0.005
+    @State private var createSpeed:Double = 0.5
 //    @State private var knifeTimer: Timer?
     //ペナルティ階段
     @State private var hStackCount:CGFloat = 0
     @State private var knifeRotation: Double = 0
     @State private var knifeMove: Bool = false
+    @State private var showPoo: Bool = false
     @State private var deadLine:CGFloat = UIScreen.main.bounds.height - 210
     //
     @State private var gameStartButton:Bool = true
@@ -237,6 +239,11 @@ struct GameView: View {
                     .frame(width:150)
                     .offset(x:ambulancePositionX.width-250,y:-250)
             }
+            if showPoo {
+                Image("poo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear() {
@@ -312,7 +319,7 @@ struct GameView: View {
         playerAction = false
         saveTimer?.invalidate()
         countSaveTime()
-        createBurgerTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
+        createBurgerTimer = Timer.scheduledTimer(withTimeInterval: createSpeed, repeats: true) { _ in
             createBurger()
             falling()
         }
@@ -322,6 +329,8 @@ struct GameView: View {
             saveTimer?.invalidate()
             createBurgerTimer?.invalidate()
             fallingTimer?.invalidate()
+            print ("speed reset")
+            gameSaveTime = 0.005
             playerAction = true
             bestScoreCalculate()
             GetBurger.removeAll()
@@ -329,7 +338,6 @@ struct GameView: View {
             hStackCount = 0
             ambulanceMove = true
             ambulanceAction()
-            gameSaveTime = 0.005
             deadLine = UIScreen.main.bounds.height-200
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 knifeTimer?.invalidate()
@@ -340,6 +348,7 @@ struct GameView: View {
     private func initialGame() {
         gameOver = false
         gameStartButton = true
+        print ("\(fallingSpeed)")
         score = 0
         gameSaveTime = 0
         ambulancePositionX.width = .zero - 250
@@ -375,9 +384,9 @@ struct GameView: View {
                     pooAction()
                 } else if itemName.imageName == "vagetable" {
                     generateImpactFeedback(for: .heavy)
-                    fallingSpeed = fallingSpeed/2
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        fallingSpeed = fallingSpeed * 2
+                    showPoo = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        showPoo = false
                     }
                     GetBurger.remove(at: index)
                 }
@@ -425,17 +434,7 @@ struct GameView: View {
     private func countSaveTime() {
         saveTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             gameSaveTime += 1
-            if gameSaveTime >= 100 {
-                fallingSpeed = 0.001
-            } else if gameSaveTime >= 80 {
-                fallingSpeed = 0.002
-            } else if gameSaveTime >= 60 {
-                fallingSpeed = 0.003
-            } else if gameSaveTime >= 40 {
-                fallingSpeed = 0.004
-            } else {
-                fallingSpeed += 0
-            }
+            speedChange()
         }
     }
     private func bestScoreCalculate() {
@@ -444,6 +443,24 @@ struct GameView: View {
         }
         if gameSaveTime > bestSaveTime {
             bestSaveTime = gameSaveTime
+        }
+    }
+    private func speedChange() {
+        if gameSaveTime < 15 {
+            print ("0.005 = \(fallingSpeed)")
+            fallingSpeed = 0.005
+        } else if gameSaveTime < 30 {
+            print ("0.004 = \(fallingSpeed)")
+            fallingSpeed = 0.004
+        } else if gameSaveTime < 45 {
+            print ("0.003 = \(fallingSpeed)")
+            fallingSpeed = 0.003
+        } else if gameSaveTime < 60 {
+            print ("0.002 = \(fallingSpeed)")
+            fallingSpeed = 0.002
+        } else {
+            print ("0.001 = \(fallingSpeed)")
+            fallingSpeed = 0.001
         }
     }
 }
