@@ -13,12 +13,13 @@ struct Burger:Identifiable {
     var imageName: String
     var burgerPosition: CGPoint
     
-    static var burgerWidth: CGFloat = 20
-    static var burgerHeight: CGFloat = 20
+    static var burgerWidth: CGFloat = 30
+    static var burgerHeight: CGFloat = 30
 }
 
 struct GameView: View {
-    
+    @AppStorage("bestScoreKey") private var bestScore: Int = 0
+    @AppStorage("bestSaveTimeKey") private var bestSaveTime: Double = 0
     @State private var score:Int = 0
     @State private var gameSaveTime: Double = 0
     
@@ -31,7 +32,7 @@ struct GameView: View {
     @State private var playerPositionY:CGFloat = UIScreen.main.bounds.height-200
     @State private var playerFrame:CGFloat = 80
     @State private var playerRotation:Double = 0
-    
+    @State private var playerOpacity: Double = 1.0
     //Create burger
     @State private var GetBurger:[Burger] = []
     
@@ -43,17 +44,20 @@ struct GameView: View {
     @State private var saveTimer: Timer?
     @State private var fallingTimer: Timer?
     @State private var createBurgerTimer: Timer?
-    @State private var gameTime:Double = 0.003
-    @State private var knifeTimer: Timer?
+    @State private var fallingSpeed:Double = 0.005
+//    @State private var knifeTimer: Timer?
     //ペナルティ階段
-    @State private var hStackCount:Int = 0
+    @State private var hStackCount:CGFloat = 0
     @State private var knifeRotation: Double = 0
-    @State private var knifeMove: Bool = false
-    @State private var knifePosition:CGFloat = -100
+//    @State private var knifeMove: Bool = false
+//    @State private var knifePosition:CGFloat = -100
     @State private var deadLine:CGFloat = UIScreen.main.bounds.height - 210
     //
     @State private var gameStartButton:Bool = true
     @State private var gameOver:Bool = false
+    //Ambulance
+    @State private var ambulancePositionX: CGSize = .zero
+    @State private var ambulanceMove:Bool = false
     var body: some View {
         ZStack {
             Color.backgroundColor.edgesIgnoringSafeArea(.all)
@@ -68,34 +72,62 @@ struct GameView: View {
 //                            stopKinife()
 //                        }
 //                    }
+                    Image("Burger")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width:Burger.burgerWidth)
+                    Text("X\(score)")
                 }
+                .fontWeight(.bold)
                 .frame(width: gameScreenWidth,height: 30)
                 //ゲームスクーリン
                 ZStack {
                     //ペナルティ(階段+1)
                     VStack(alignment: .center, spacing: 0) {
-                        Image("knife")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width:100)
-                            .rotationEffect(Angle(degrees: knifeRotation),anchor: .center)
-                            .offset(x:knifePosition)
-                        Spacer()
-                        ForEach(0..<hStackCount,id: \.self) { _ in
-                            HStack(spacing: 0) {
-                                ForEach(0..<Int(gameScreenWidth/20),id: \.self) { _ in
-                                    Image("Burger")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width:Burger.burgerWidth,height:Burger.burgerHeight)
-                                }
+//                        Image("knife")
+//                            .resizable()
+//                            .aspectRatio(contentMode: .fit)
+//                            .frame(width:100)
+//                            .rotationEffect(Angle(degrees: knifeRotation),anchor: .center)
+//                            .offset(x:knifePosition)
+                        HStack(spacing:0) {
+                            ForEach(0..<7,id: \.self) { _ in
+                                Image("JuziDeadLine")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width:50)
+                                    .rotationEffect(Angle(degrees: knifeRotation),anchor: .center)
                             }
-                            .frame(width: gameScreenWidth,height:Burger.burgerHeight)
-//                            .border(.blue)
                         }
+                        Text("SAVE TIME:\(Int(gameSaveTime))")
+                            .foregroundColor(.white)
+                            .fontWeight(.bold)
+                        HStack {
+                            Text("BEST SCORE:\(Int(bestScore))")
+                            Spacer()
+                            Text("BEST TIME:\(Int(bestSaveTime))")
+                        }
+                        .foregroundColor(.white)
+                        .fontWeight(.bold)
+                        .opacity(0.5)
+                        Spacer()
+//                        ForEach(0..<hStackCount,id: \.self) { _ in
+//                            HStack(spacing: 0) {
+//                                ForEach(0..<Int(gameScreenWidth/28),id: \.self) { _ in
+//                                    Image("Burger")
+//                                        .resizable()
+//                                        .aspectRatio(contentMode: .fit)
+//                                        .frame(width:Burger.burgerWidth,height:Burger.burgerHeight)
+//                                }
+//                            }
+//                            .frame(width: gameScreenWidth,height:Burger.burgerHeight)
+//                        }
+                        Rectangle()
+                            .fill(Color.backgroundColor)
+                            .frame(width: gameScreenWidth,
+                                   height:Burger.burgerHeight * hStackCount)
                     }
                     .frame(width: gameScreenWidth,height:gameScreenHeight)
-//                    .border(.green)
                     
                     //PlayerImage
                     Image("ManDefault")
@@ -105,6 +137,15 @@ struct GameView: View {
                         .position(x:playerPositionX.width + dragPositionX.width + 10,
                                   y:playerPositionY - 40)
                         .rotationEffect(Angle(degrees: playerRotation),anchor: .center)
+                        .opacity(playerOpacity)
+                    Rectangle()
+                        .fill(.white)
+                        .cornerRadius(15)
+                        .opacity(0.2)
+                        .frame(width: 60,height: 50)
+                        .position(x:playerPositionX.width + dragPositionX.width + 5,
+                                  y:UIScreen.main.bounds.height-240)
+                        .offset(y:80)
                         .gesture(
                             DragGesture()
                                 .updating($dragPositionX) { move, value, _ in
@@ -123,7 +164,7 @@ struct GameView: View {
                         .opacity(0.0)
                     //BurgerImage
                     ForEach(GetBurger) { item in
-                    Image("Burger")
+                        Image(item.imageName)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width:Burger.burgerWidth)
@@ -137,15 +178,13 @@ struct GameView: View {
                 HStack {
                     
                 }
-                .frame(width: gameScreenWidth,height: 30)
-                .border(.red)
+                .frame(width: 60,height: 50)
             }
             if gameStartButton {
                 Button(action: {
                     gameStartButton = false
                     startGame()
-                    knifeMove = true
-                    knifeAnimation()
+                    bestScoreCalculate()
                 }) {
                     Text("ゲーム開始")
                         .foregroundColor(Color.white)
@@ -157,7 +196,7 @@ struct GameView: View {
             }
             if gameOver {
                 VStack {
-                    Spacer()
+                    Image("french")
                     Button(action: {
                         //リセット
                         initialGame()
@@ -175,35 +214,60 @@ struct GameView: View {
                 .background(Color.backgroundColor)
                 .cornerRadius(10)
             }
+            if ambulanceMove {
+                Image("Ambulance")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width:150)
+                    .offset(x:ambulancePositionX.width-250,y:-250)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear() {
             //ポジションを真ん中にリセット
             playerPositionX.width = UIScreen.main.bounds.width/2 - 30
+            bestScoreCalculate()
+        }
+        .onDisappear() {
+            saveTimer?.invalidate()
+            createBurgerTimer?.invalidate()
+            fallingTimer?.invalidate()
         }
     }
     //Burger構造体
     private func createBurger() {
-        let image = "Burger"
+        let randomNumber = Int.random(in: 1...100)
+        let randomImage: String
+        
+        if randomNumber <= 90 {
+            randomImage = "Burger"
+        } else {
+            randomImage = "poo"
+        }
+//        let images = ["Burger","poo"]
+//        let randomImage = images.randomElement() ?? "Burger"
         let randomX = CGFloat.random(in: Burger.burgerWidth/2...(gameScreenWidth-10))
         
-        let newItem = Burger(imageName: image, burgerPosition:CGPoint(x:randomX,y:10))
+        let newItem = Burger(imageName: randomImage, burgerPosition:CGPoint(x:randomX,y:10))
         GetBurger.append(newItem)
     }
     //Falling
     private func falling() {
         fallingTimer?.invalidate()
-        fallingTimer = Timer.scheduledTimer(withTimeInterval: gameTime, repeats: true) { _ in
+        fallingTimer = Timer.scheduledTimer(withTimeInterval: fallingSpeed, repeats: true) { _ in
             for index in GetBurger.indices.reversed() {
+                let itemName = GetBurger[index]
                 if GetBurger[index].burgerPosition.y <= deadLine {
                     withAnimation(.linear) {
                         GetBurger[index].burgerPosition.y += 1
                     }
-                } else {
+                } else if itemName.imageName == "Burger" {
                     GetBurger.remove(at: index)
                     hStackCount += 1
                     playerPositionY -= Burger.burgerHeight
                     deadLine -= Burger.burgerHeight
+                } else {
+                    GetBurger.remove(at: index)
                 }
             }
             collision()
@@ -212,31 +276,42 @@ struct GameView: View {
         }
     }
     private func startGame() {
-        createBurgerTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { _ in
+        saveTimer?.invalidate()
+        countSaveTime()
+        createBurgerTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
             createBurger()
             falling()
         }
     }
     private func stopGame() {
-        if playerPositionY <= 210 {
+        if playerPositionY <= 130 {
+            saveTimer?.invalidate()
             createBurgerTimer?.invalidate()
             fallingTimer?.invalidate()
+            bestScoreCalculate()
             GetBurger.removeAll()
             hStackCount = 0
-            playerDelect()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            ambulanceMove = true
+            ambulanceAction()
+            gameSaveTime = 0.005
+            deadLine = UIScreen.main.bounds.height-200
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 gameOver = true
-                stopKinife()
             }
         }
     }
     private func initialGame() {
         gameOver = false
         gameStartButton = true
+        score = 0
+        gameSaveTime = 0
+        ambulancePositionX.width = .zero - 250
         playerFrame = 80
         playerRotation = 0
-        playerPositionX.width = UIScreen.main.bounds.width/2 - 30
+        playerOpacity = 1.0
         playerPositionY = UIScreen.main.bounds.height-200
+        playerPositionX.width = UIScreen.main.bounds.width/2 - 30
+        deadLine = UIScreen.main.bounds.height-200
     }
     //判定
     private func collision() {
@@ -254,30 +329,72 @@ struct GameView: View {
                                        width: Burger.burgerWidth,
                                        height: Burger.burgerHeight)
             if newMainFrame.intersects(newBurgerRect) {
-                GetBurger.remove(at: index)
+                let itemName = GetBurger[index]
+                if itemName.imageName == "Burger" {
+                    generateImpactFeedback(for: .medium)
+                    score += 1
+                    GetBurger.remove(at: index)
+                } else if itemName.imageName == "poo" {
+                    generateImpactFeedback(for: .heavy)
+                    fallingSpeed = fallingSpeed/2
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        fallingSpeed = fallingSpeed * 2
+                    }
+                    GetBurger.remove(at: index)
+                }
             }
         }
     }
-    private func knifeAnimation() {
-        if knifeMove {
-            withAnimation(.linear(duration: 0.5).repeatForever(autoreverses: false)) {
-                knifeRotation += 360
-            }
-            withAnimation(.linear(duration: 0.5).repeatForever(autoreverses: true)) {
-                knifePosition += 200
-            }
-        }
+    //振動処理
+    func generateImpactFeedback(for style: UIImpactFeedbackGenerator.FeedbackStyle) {
+        let feedbackGenerator = UIImpactFeedbackGenerator(style: style)
+        feedbackGenerator.prepare()
+        feedbackGenerator.impactOccurred()
     }
-    private func stopKinife() {
-//        knifeTimer?.invalidate()
-        knifeMove = false
-        knifeRotation = 0
+    //振動処理
+    func generateErrorFeedback() {
+        let feedbackGenerator = UINotificationFeedbackGenerator()
+        feedbackGenerator.prepare()
+        // 类型有 .success .error 和 .warning
+        //分别对应通知,错误和警告
+        feedbackGenerator.notificationOccurred(.error)
     }
-    private func playerDelect() {
+//    private func playerDelect() {
+//
+//    }
+    private func ambulanceAction() {
         withAnimation(.linear(duration: 1)) {
-            playerFrame -= 80
-            playerRotation += 360
-            playerPositionY -= 100
+            ambulancePositionX.width = playerPositionX.width + dragPositionX.width + 110
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            playerOpacity = 0.0
+            withAnimation(.linear(duration: 1)) {
+                ambulancePositionX.width += 360
+            }
+        }
+    }
+    private func countSaveTime() {
+        saveTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+            gameSaveTime += 1
+            if gameSaveTime >= 100 {
+                fallingSpeed = 0.001
+            } else if gameSaveTime >= 80 {
+                fallingSpeed = 0.002
+            } else if gameSaveTime >= 60 {
+                fallingSpeed = 0.003
+            } else if gameSaveTime >= 40 {
+                fallingSpeed = 0.004
+            } else {
+                fallingSpeed += 0
+            }
+        }
+    }
+    private func bestScoreCalculate() {
+        if score > bestScore {
+            bestScore = score
+        }
+        if gameSaveTime > bestSaveTime {
+            bestSaveTime = gameSaveTime
         }
     }
 }
