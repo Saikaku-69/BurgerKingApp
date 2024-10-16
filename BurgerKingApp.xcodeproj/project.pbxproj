@@ -7,22 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7F19D2EE2CBFE405009745DD /* PooView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F19D2ED2CBFE405009745DD /* PooView.swift */; };
 		7F91E0902CBB7E190017CD64 /* BurgerKingAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F91E08F2CBB7E190017CD64 /* BurgerKingAppApp.swift */; };
 		7F91E0922CBB7E190017CD64 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F91E0912CBB7E190017CD64 /* ContentView.swift */; };
 		7F91E0942CBB7E1E0017CD64 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7F91E0932CBB7E1E0017CD64 /* Assets.xcassets */; };
 		7F91E0972CBB7E1E0017CD64 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7F91E0962CBB7E1E0017CD64 /* Preview Assets.xcassets */; };
 		7F91E09F2CBB81AD0017CD64 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F91E09E2CBB81AD0017CD64 /* GameView.swift */; };
-		7F91E0A12CBB9B2C0017CD64 /* ItemDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F91E0A02CBB9B2B0017CD64 /* ItemDataView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7F19D2ED2CBFE405009745DD /* PooView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PooView.swift; sourceTree = "<group>"; };
 		7F91E08C2CBB7E190017CD64 /* BurgerKingApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BurgerKingApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F91E08F2CBB7E190017CD64 /* BurgerKingAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurgerKingAppApp.swift; sourceTree = "<group>"; };
 		7F91E0912CBB7E190017CD64 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7F91E0932CBB7E1E0017CD64 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7F91E0962CBB7E1E0017CD64 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		7F91E09E2CBB81AD0017CD64 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
-		7F91E0A02CBB9B2B0017CD64 /* ItemDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDataView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,7 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				7F91E09E2CBB81AD0017CD64 /* GameView.swift */,
-				7F91E0A02CBB9B2B0017CD64 /* ItemDataView.swift */,
+				7F19D2ED2CBFE405009745DD /* PooView.swift */,
 			);
 			path = Feature;
 			sourceTree = "<group>";
@@ -152,7 +152,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7F91E0922CBB7E190017CD64 /* ContentView.swift in Sources */,
-				7F91E0A12CBB9B2C0017CD64 /* ItemDataView.swift in Sources */,
+				7F19D2EE2CBFE405009745DD /* PooView.swift in Sources */,
 				7F91E09F2CBB81AD0017CD64 /* GameView.swift in Sources */,
 				7F91E0902CBB7E190017CD64 /* BurgerKingAppApp.swift in Sources */,
 			);
