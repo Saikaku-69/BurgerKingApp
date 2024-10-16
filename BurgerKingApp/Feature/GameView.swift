@@ -24,6 +24,11 @@ struct GameView: View {
     @AppStorage("bestScoreKey") private var bestScore: Int = 0
     @State private var score:Int = 0
     @State private var gameTimeCount: Double = 60
+    @State private var getScore:Int = 1
+    @State private var grafUpProbability:Int = 5
+    @State private var goldBurgerProbability:Int = 10
+    @State private var compassProbability:Int = 15
+    @State private var vagetableProbability:Int = 20
     
     @State private var gameScreenWidth:CGFloat = UIScreen.main.bounds.width-50
     @State private var gameScreenHeight:CGFloat = UIScreen.main.bounds.height-200
@@ -47,24 +52,16 @@ struct GameView: View {
     @State private var saveTimer: Timer?
     @State private var fallingTimer: Timer?
     @State private var createBurgerTimer: Timer?
-    @State private var knifeTimer: Timer?
     @State private var pooTimer: Timer?
     @State private var fallingSpeed:Double = 0.005
-    @State private var createSpeed:Double = 0.5
-//    @State private var knifeTimer: Timer?
+    @State private var createSpeed:Double = 0.3
     //ペナルティ階段
     @State private var hStackCount:CGFloat = 0
-    @State private var knifeRotation: Double = 0
-    @State private var knifeMove: Bool = false
     @State private var showPoo: Bool = false
     @State private var deadLine:CGFloat = UIScreen.main.bounds.height - 210
     //
     @State private var gameStartButton:Bool = true
     @State private var gameOver:Bool = false
-    //Ambulance
-    @State private var ambulancePositionX: CGSize = .zero
-    @State private var ambulanceMove:Bool = false
-    
     var body: some View {
         ZStack {
             Color.backgroundColor.edgesIgnoringSafeArea(.all)
@@ -185,7 +182,6 @@ struct GameView: View {
                     gameStartButton = false
                     startGame()
                     bestScoreCalculate()
-                    knifeMove = true
                 }) {
                     Text("ゲーム開始")
                         .foregroundColor(Color.white)
@@ -214,13 +210,6 @@ struct GameView: View {
                 .background(Color.backgroundColor)
                 .cornerRadius(10)
             }
-            if ambulanceMove {
-                Image("Ambulance")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width:150)
-                    .offset(x:ambulancePositionX.width-250,y:-250)
-            }
             if showPoo {
                 PooView()
             }
@@ -240,12 +229,19 @@ struct GameView: View {
     private func createBurger() {
         let randomNumber = Int.random(in: 1...100)
         let randomImage: String
-        
-        if randomNumber <= 90 {
-            randomImage = "Burger"
-        } else {
+        //regular = 80 ,score = 5,time = 5,penalty = 5, double
+        if randomNumber <= grafUpProbability  {
+            randomImage = "grafup"
+        } else if randomNumber <= goldBurgerProbability {
+            randomImage = "BurgerBreak"
+        } else if randomNumber <= compassProbability {
+            randomImage = "compass"
+        } else if randomNumber <= vagetableProbability {
             randomImage = "vagetable"
+        } else {
+            randomImage = "Burger"
         }
+        
         let randomX = CGFloat.random(in: Burger.burgerWidth/2 + 30...(gameScreenWidth-40))
         let newItem = Burger(imageName: randomImage, burgerPosition:CGPoint(x:randomX,y:10))
         GetBurger.append(newItem)
@@ -279,9 +275,11 @@ struct GameView: View {
                     }
                 } else if itemName.imageName == "Burger" {
                     GetBurger.remove(at: index)
-                    hStackCount += 1
-                    playerPositionY -= Burger.burgerHeight
-                    deadLine -= Burger.burgerHeight
+                    if hStackCount <= 7 {
+                        hStackCount += 1
+                        playerPositionY -= Burger.burgerHeight
+                        deadLine -= Burger.burgerHeight
+                    }
                 } else {
                     GetBurger.remove(at: index)
                 }
@@ -306,17 +304,13 @@ struct GameView: View {
             fallingTimer?.invalidate()
             gameTimeCount = 0.005
             playerAction = true
+            playerOpacity = 0.0
             bestScoreCalculate()
             GetBurger.removeAll()
             GetPoo.removeAll()
             hStackCount = 0
-            ambulanceMove = true
-            ambulanceAction()
             deadLine = UIScreen.main.bounds.height-200
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                knifeTimer?.invalidate()
-                gameOver = true
-            }
+            gameOver = true
         }
     }
     private func initialGame() {
@@ -324,9 +318,7 @@ struct GameView: View {
         gameStartButton = true
         score = 0
         gameTimeCount = 60
-        ambulancePositionX.width = .zero - 250
         playerFrame = 80
-        playerRotation = 0
         playerOpacity = 1.0
         playerPositionY = UIScreen.main.bounds.height-200
         playerPositionX.width = UIScreen.main.bounds.width/2 - 30
@@ -351,17 +343,40 @@ struct GameView: View {
                 let itemName = GetBurger[index]
                 if itemName.imageName == "Burger" {
                     generateImpactFeedback(for: .medium)
-                    score += 1
+                    score += getScore
                     GetBurger.remove(at: index)
                     createPoo()
                     pooAction()
+                } else if itemName.imageName == "compass" {
+                    gameTimeCount += 5
+                    GetBurger.remove(at: index)
+                } else if itemName.imageName == "BurgerBreak" {
+                    grafUpProbability = 0
+                    goldBurgerProbability = 0
+                    compassProbability = 0
+                    vagetableProbability = 0
+                    GetBurger.remove(at: index)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                        grafUpProbability = 5
+                        goldBurgerProbability = 10
+                        compassProbability = 15
+                        vagetableProbability = 20
+                    }
+                } else if itemName.imageName == "grafup" {
+                    getScore = 5
+                    compassProbability = 0
+                    GetBurger.remove(at: index)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                        getScore = 1
+                        compassProbability = 5
+                    }
                 } else if itemName.imageName == "vagetable" {
                     generateImpactFeedback(for: .heavy)
                     showPoo = true
+                    GetBurger.remove(at: index)
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                         showPoo = false
                     }
-                    GetBurger.remove(at: index)
                 }
             }
         }
@@ -380,17 +395,6 @@ struct GameView: View {
         //分别对应通知,错误和警告
         feedbackGenerator.notificationOccurred(.error)
     }
-    private func ambulanceAction() {
-        withAnimation(.linear(duration: 1)) {
-            ambulancePositionX.width = playerPositionX.width + dragPositionX.width + 110
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            playerOpacity = 0.0
-            withAnimation(.linear(duration: 1)) {
-                ambulancePositionX.width += 360
-            }
-        }
-    }
     private func countSaveTime() {
         saveTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             gameTimeCount -= 1
@@ -398,7 +402,11 @@ struct GameView: View {
         }
     }
     private func speedChange() {
-        fallingSpeed -= 0.004 / 60
+        if fallingSpeed >= 0.001 {
+            fallingSpeed -= 0.004 / 60
+        } else  {
+            fallingSpeed = 0.001
+        }
     }
     private func bestScoreCalculate() {
         if score > bestScore {
