@@ -302,7 +302,7 @@ struct GameView: View {
             saveTimer?.invalidate()
             createBurgerTimer?.invalidate()
             fallingTimer?.invalidate()
-            gameTimeCount = 0.005
+            fallingSpeed = 0.005
             playerAction = true
             playerOpacity = 0.0
             bestScoreCalculate()
@@ -348,9 +348,11 @@ struct GameView: View {
                     createPoo()
                     pooAction()
                 } else if itemName.imageName == "compass" {
+                    generateImpactFeedback(for: .heavy)
                     gameTimeCount += 5
                     GetBurger.remove(at: index)
                 } else if itemName.imageName == "BurgerBreak" {
+                    generateImpactFeedback(for: .heavy)
                     grafUpProbability = 0
                     goldBurgerProbability = 0
                     compassProbability = 0
@@ -363,6 +365,7 @@ struct GameView: View {
                         vagetableProbability = 20
                     }
                 } else if itemName.imageName == "grafup" {
+                    generateImpactFeedback(for: .heavy)
                     getScore = 5
                     compassProbability = 0
                     GetBurger.remove(at: index)
@@ -371,7 +374,7 @@ struct GameView: View {
                         compassProbability = 5
                     }
                 } else if itemName.imageName == "vagetable" {
-                    generateImpactFeedback(for: .heavy)
+                    generateErrorFeedback()
                     showPoo = true
                     GetBurger.remove(at: index)
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
