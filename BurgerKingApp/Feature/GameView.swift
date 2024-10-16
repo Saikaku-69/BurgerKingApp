@@ -22,6 +22,7 @@ struct Poo:Identifiable {
 }
 struct GameView: View {
     @AppStorage("bestScoreKey") private var bestScore: Int = 0
+    @AppStorage("playerNameKey") private var playerName: String = ""
     @State private var score:Int = 0
     @State private var gameTimeCount: Double = 60
     @State private var getScore:Int = 1
@@ -194,6 +195,10 @@ struct GameView: View {
             if gameOver {
                 VStack {
                     Image("french")
+                    //ranking
+//                    Text("")
+//                    Text("")
+//                    Text("")
                     Button(action: {
                         initialGame()
                     }) {
@@ -308,9 +313,11 @@ struct GameView: View {
             bestScoreCalculate()
             GetBurger.removeAll()
             GetPoo.removeAll()
-            hStackCount = 0
             deadLine = UIScreen.main.bounds.height-200
-            gameOver = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                hStackCount = 0
+                gameOver = true
+            }
         }
     }
     private func initialGame() {
