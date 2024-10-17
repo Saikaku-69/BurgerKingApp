@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7F19D2EE2CBFE405009745DD /* PooView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F19D2ED2CBFE405009745DD /* PooView.swift */; };
+		7F19D2F02CBFF805009745DD /* GameResaultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F19D2EF2CBFF805009745DD /* GameResaultView.swift */; };
 		7F91E0902CBB7E190017CD64 /* BurgerKingAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F91E08F2CBB7E190017CD64 /* BurgerKingAppApp.swift */; };
 		7F91E0922CBB7E190017CD64 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F91E0912CBB7E190017CD64 /* ContentView.swift */; };
 		7F91E0942CBB7E1E0017CD64 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7F91E0932CBB7E1E0017CD64 /* Assets.xcassets */; };
@@ -17,6 +18,7 @@
 
 /* Begin PBXFileReference section */
 		7F19D2ED2CBFE405009745DD /* PooView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PooView.swift; sourceTree = "<group>"; };
+		7F19D2EF2CBFF805009745DD /* GameResaultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameResaultView.swift; sourceTree = "<group>"; };
 		7F91E08C2CBB7E190017CD64 /* BurgerKingApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BurgerKingApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F91E08F2CBB7E190017CD64 /* BurgerKingAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurgerKingAppApp.swift; sourceTree = "<group>"; };
 		7F91E0912CBB7E190017CD64 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -77,6 +79,7 @@
 			children = (
 				7F91E09E2CBB81AD0017CD64 /* GameView.swift */,
 				7F19D2ED2CBFE405009745DD /* PooView.swift */,
+				7F19D2EF2CBFF805009745DD /* GameResaultView.swift */,
 			);
 			path = Feature;
 			sourceTree = "<group>";
@@ -155,6 +158,7 @@
 				7F19D2EE2CBFE405009745DD /* PooView.swift in Sources */,
 				7F91E09F2CBB81AD0017CD64 /* GameView.swift in Sources */,
 				7F91E0902CBB7E190017CD64 /* BurgerKingAppApp.swift in Sources */,
+				7F19D2F02CBFF805009745DD /* GameResaultView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
