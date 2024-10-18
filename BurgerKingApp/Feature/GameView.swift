@@ -347,7 +347,10 @@ struct GameView: View {
                 } else if itemName.imageName == "BurgerBreak" {
                     generateImpactFeedback(for: .heavy)
                     GetBurger.remove(at: index)
-                    GetBurger.removeAll()
+                    GetBurger.removeAll {$0.imageName == "BurgerBreak"}
+                    GetBurger.removeAll {$0.imageName == "vagetable"}
+                    GetBurger.removeAll {$0.imageName == "compass"}
+                    GetBurger.removeAll {$0.imageName == "grafup"}
                     grafUpProbability = 0
                     goldBurgerProbability = 0
                     compassProbability = 0
