@@ -29,6 +29,7 @@ struct PlayerInfoView: View {
                             .padding()
                             .background(Color.white.opacity(0.5))
                             .cornerRadius(15)
+                            .keyboardType(.default)
                     }
                     .frame(width:UIScreen.main.bounds.width/2)
                 Button(action: {
@@ -44,11 +45,14 @@ struct PlayerInfoView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width:logoSize)
             }
-            if showBugers {
-                OpenningView()
-            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .fullScreenCover(isPresented: $showBugers) {
+            GameView()
+        }
+        .onDisappear() {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
     }
 }
 
