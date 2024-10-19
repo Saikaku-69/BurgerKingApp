@@ -23,6 +23,9 @@ struct Poo:Identifiable {
 }
 struct GameView: View {
     @ObservedObject private var countdata = countData.shared
+    @State private var backgroundColor: Color = .backgroundColor
+    @State private var backgroundOpacity:Double = 0.0
+    @State private var resultOpacity:Double = 0.0
     //スコアup中のTimer
     @State private var grafUpTime: Double = 0
     @State private var pointUpTimer: Timer?
@@ -30,7 +33,7 @@ struct GameView: View {
     @AppStorage("bestScoreKey") private var bestScore: Int = 0
     @AppStorage("playerNameKey") private var playerName: String = ""
     @State private var score:Int = 0
-    @State private var gameTimeCount: Double = 60
+    @State private var gameTimeCount: Double = 20
     @State private var getScore:Int = 1
     @State private var getTime:Double = 5
     //確率
@@ -72,7 +75,15 @@ struct GameView: View {
     @State private var scoreColor:Bool = false
     var body: some View {
         ZStack {
-            Color.backgroundColor.edgesIgnoringSafeArea(.all)
+            backgroundColor
+                .edgesIgnoringSafeArea(.all)
+                .onTapGesture {
+                    backgroundColor = Color(
+                        hue: Double.random(in: 0...1),
+                        saturation: Double.random(in: 0.5...1),
+                        brightness: Double.random(in: 0.5...1)
+                    )
+                }
             VStack {
                 HStack {
                     Image("clock")
@@ -91,23 +102,25 @@ struct GameView: View {
                 ZStack {
                     //Play画面
                     VStack {
-                        Text("BEST SCORE: \(Int(bestScore))")
-                            .foregroundColor(.white)
-                            .fontWeight(.bold)
-                            .opacity(0.5)
-                        HStack {
+                        if !gameOver {
+                            Text("BEST SCORE: \(Int(bestScore))")
+                                .foregroundColor(.white)
+                                .fontWeight(.bold)
+                                .opacity(0.5)
                             HStack {
-                                Image("Burger")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width:30)
-                                Text("X \(Int(score))")
+                                HStack {
+                                    Image("Burger")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width:30)
+                                    Text("X \(Int(score))")
+                                }
+                                .foregroundColor(scoreColor ? Color.red : Color.white)
+                                .fontWeight(.bold)
+                                .opacity(0.9)
                             }
-                            .foregroundColor(scoreColor ? Color.red : Color.white)
-                            .fontWeight(.bold)
-                            .opacity(0.9)
+                            .frame(width:UIScreen.main.bounds.width/2)
                         }
-                        .frame(width:UIScreen.main.bounds.width/2)
                         VStack {
                             if !gameOver {
                                 PointPlusTimeView(pointUpTimeCount: $grafUpTime)
@@ -116,9 +129,20 @@ struct GameView: View {
                         }.frame(height:30)
                         Spacer()
                         //Play画面の高さ
-                        Rectangle()
-                            .fill(Color.backgroundColor)
-                            .frame(width: gameScreenWidth,height:Burger.burgerHeight * hStackCount)
+                        VStack(spacing:0) {
+                            ForEach(0..<Int(hStackCount),id: \.self) { _ in
+                                HStack(spacing:0) {
+                                    ForEach(0..<4,id: \.self) { _ in
+                                        Image("mapGround")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: gameScreenWidth / 4, height: 30)
+                                            .clipped()
+                                    }
+                                }
+                            }
+                        }
+                        .frame(width:gameScreenWidth)
                     }
                     .frame(width: gameScreenWidth,height:gameScreenHeight)
                     //PlayerImage
@@ -128,16 +152,6 @@ struct GameView: View {
                         .frame(height:playerFrame)
                         .position(x:playerPositionX.width + dragPositionX.width + 10,y:playerPositionY - 40)
                         .opacity(playerOpacity)
-                        .gesture(
-                            DragGesture()
-                                .updating($dragPositionX) { move, value, _ in
-                                    value = move.translation
-                                }
-                                .onEnded { value in
-                                    playerPositionX.width += value.translation.width
-                                }
-                        )
-                        .disabled(playerDisable)
                     //当たる判定用mainObject
                     Rectangle()
                         .fill(.red)
@@ -188,6 +202,15 @@ struct GameView: View {
                 }
                 .frame(width: gameScreenWidth,height: 50)
             }
+            ZStack {
+                Rectangle()
+                    .fill(.black)
+                    .frame(width:gameScreenWidth,height:gameScreenHeight)
+                    .offset(y:-10)
+                Text("Game Over!!")
+                    .foregroundColor(.white)
+            }
+            .opacity(backgroundOpacity)
             if gameStartButton {
                 Button(action: {
                     gameStartButton = false
@@ -203,23 +226,18 @@ struct GameView: View {
                 }
             }
             if gameOver {
-                VStack {
-                    GameResultView()
-                    Button(action: {
-                        initialGame()
-                    }) {
-                        Text("Homeに戻る")
-                            .foregroundColor(Color.white)
-                            .fontWeight(.bold)
-                            .padding()
-                            .background(Color.gameBackgroundColor)
-                            .cornerRadius(35)
-                    }
+                GameResultView()
+                Button(action: {
+                    initialGame()
+                }) {
+                    Text("Homeに戻る")
+                        .fontWeight(.bold)
+                        .padding(5)
+                        .background(Color.clear)
+                        .cornerRadius(50)
                 }
-                .frame(width: gameScreenWidth-60,height: gameScreenHeight/3)
-                .padding(15)
-                .background(Color.backgroundColor)
-                .cornerRadius(40)
+                .offset(y:200)
+                .opacity(resultOpacity)
             }
             if showPoo {
                 PooView()
@@ -313,10 +331,19 @@ struct GameView: View {
             bestScoreCalculate()
             deadLine = UIScreen.main.bounds.height-200
             fallingSpeed = 0.005
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            withAnimation(.linear(duration:1)) {
+                backgroundOpacity += 1.0
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 playerOpacity = 0.0
                 hStackCount = 0
                 gameOver = true
+                backgroundOpacity = 0
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    withAnimation(.linear(duration:1)) {
+                        resultOpacity += 1.0
+                    }
+                }
             }
         }
     }
@@ -335,6 +362,7 @@ struct GameView: View {
         playerPositionY = UIScreen.main.bounds.height-200
         playerPositionX.width = UIScreen.main.bounds.width/2 - 30
         playerOpacity = 1.0
+        resultOpacity = 0
     }
     //判定
     private func collision() {
@@ -370,18 +398,6 @@ struct GameView: View {
                         score += 100
                     }
                     countdata.getGoldBurgerCount += 1
-//                    GetBurger.removeAll {$0.imageName == "GoldBurger"}
-//                    GetBurger.removeAll {$0.imageName == "vagetable"}
-//                    grafUpProbability = 0
-//                    goldBurgerProbability = 0
-//                    clockProbability = 0
-//                    vagetableProbability = 0
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-//                        grafUpProbability = 5
-//                        goldBurgerProbability = 5
-//                        clockProbability = 5
-//                        vagetableProbability = 5
-//                    }
                 } else if itemName.imageName == "grafup" {
                     generateImpactFeedback(for: .heavy)
                     GetBurger.remove(at: index)
@@ -462,9 +478,10 @@ extension Color {
 }
 extension Color {
     static var gameBackgroundColor:Color {
-        return Color (
-            Color(hue: 0.7, saturation: 0.6, brightness: 0.3)
-        )
+//        return Color (
+//            Color(hue: 0.7, saturation: 0.6, brightness: 0.3)
+//        )
+        return Color.black
     }
 }
 
