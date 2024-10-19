@@ -35,9 +35,11 @@ struct PlayerInfoView: View {
                     .frame(width:UIScreen.main.bounds.width/2)
                 Button(action: {
                     isFocused = false
-                    logoMove()
                     DispatchQueue.main.asyncAfter(deadline: .now() + waitTime) {
-                        showBurgers = true
+                        logoMove()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            showBurgers = true
+                        }
                     }
                 }) {
                     Text("遊びに行く")
@@ -61,14 +63,16 @@ struct PlayerInfoView: View {
                     .background(Color.black)
                     .offset(y:-logoOffset)
             }
-            if showBurgers {
-                OpenningView()
-            }
+//            if showBurgers {
+//                OpenningView()
+//            }
         }
-        
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onDisappear() {
             isFocused = false
+        }
+        .fullScreenCover(isPresented:$showBurgers) {
+            GameView()
         }
     }
     private func logoMove() {
