@@ -22,11 +22,18 @@ struct Poo:Identifiable {
     var pooPosition: CGPoint
 }
 struct GameView: View {
+    //スコアup中のTimer
+    @State private var grafUpTime: Double = 0
+    @State private var pointUpTimer: Timer?
+    @State private var grafTimeOpacity: Double = 0.0
     @AppStorage("bestScoreKey") private var bestScore: Int = 0
     @AppStorage("playerNameKey") private var playerName: String = ""
     @State private var score:Int = 0
     @State private var gameTimeCount: Double = 60
     @State private var getScore:Int = 1
+    @State private var getTime:Double = 5
+    @State private var getTimeOpacity:Double = 1.0
+    @State private var getTimeOffset:CGFloat = 100
     //確率
     @State private var grafUpProbability:Int = 5
     @State private var goldBurgerProbability:Int = 5
@@ -67,7 +74,6 @@ struct GameView: View {
     var body: some View {
         ZStack {
             Color.backgroundColor.edgesIgnoringSafeArea(.all)
-            
             VStack {
                 HStack {
                     Image("compass")
@@ -77,10 +83,13 @@ struct GameView: View {
                         .foregroundColor(.white)
                         .fontWeight(.bold)
                     Text("\(Int(gameTimeCount))")
-                        .font(.system(size: 50))
-                        .foregroundColor(.white)
-                        .fontWeight(.bold)
+                        .font(.system(size: 40))
+                    Text("+\(Int(getTime))")
+                        .font(.system(size: 20))
+                        .offset(y:getTimeOffset)
+                        .opacity(getTimeOpacity)
                 }
+                .foregroundColor(.white)
                 .fontWeight(.bold)
                 .frame(width: gameScreenWidth,height: 30)
                 
@@ -92,15 +101,21 @@ struct GameView: View {
                             .fontWeight(.bold)
                             .opacity(0.5)
                         HStack {
-                            Image("Burger")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width:30)
-                            Text("X \(Int(score))")
+                            HStack {
+                                Image("Burger")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width:30)
+                                Text("X \(Int(score))")
+                            }
+                            .foregroundColor(scoreColor ? Color.red : Color.white)
+                            .fontWeight(.bold)
+                            .opacity(0.9)
+                            PointPlusTimeView(pointUpTimeCount: $grafUpTime)
+                                .opacity(grafTimeOpacity)
                         }
-                        .foregroundColor(scoreColor ? Color.red : Color.white)
-                        .fontWeight(.bold)
-                        .opacity(0.9)
+                        .frame(width:UIScreen.main.bounds.width/2)
+                        .offset(x: 15)
                         Spacer()
                         //Play画面の高さ
                         Rectangle()
@@ -301,6 +316,7 @@ struct GameView: View {
             deadLine = UIScreen.main.bounds.height-200
             fallingSpeed = 0.005
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                playerOpacity = 0.0
                 hStackCount = 0
                 gameOver = true
             }
@@ -311,6 +327,7 @@ struct GameView: View {
         createBurgerTimer?.invalidate()
         fallingTimer?.invalidate()
         pooTimer?.invalidate()
+        pointUpTimer?.invalidate()
     }
     private func initialGame() {
         gameOver = false
@@ -337,20 +354,19 @@ struct GameView: View {
                 if itemName.imageName == "Burger" {
                     generateImpactFeedback(for: .medium)
                     GetBurger.remove(at: index)
+                    print ("\(getScore)")
                     score += getScore
                     createPoo()
                     pooAction()
                 } else if itemName.imageName == "compass" {
                     generateImpactFeedback(for: .heavy)
                     GetBurger.remove(at: index)
-                    gameTimeCount += 5
+                    getTimeAnimation()
                 } else if itemName.imageName == "BurgerBreak" {
                     generateImpactFeedback(for: .heavy)
                     GetBurger.remove(at: index)
                     GetBurger.removeAll {$0.imageName == "BurgerBreak"}
                     GetBurger.removeAll {$0.imageName == "vagetable"}
-                    GetBurger.removeAll {$0.imageName == "compass"}
-                    GetBurger.removeAll {$0.imageName == "grafup"}
                     grafUpProbability = 0
                     goldBurgerProbability = 0
                     compassProbability = 0
@@ -364,14 +380,10 @@ struct GameView: View {
                 } else if itemName.imageName == "grafup" {
                     generateImpactFeedback(for: .heavy)
                     GetBurger.remove(at: index)
+                    grafTimeOpacity = 1.0
                     scoreColor = true
-                    getScore = 5
-                    grafUpProbability = 0
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                        scoreColor = false
-                        getScore = 1
-                        grafUpProbability = 5
-                    }
+                    grafUpTime += 5
+                    countStart()
                 } else if itemName.imageName == "vagetable" {
                     generateErrorFeedback()
                     GetBurger.remove(at: index)
@@ -413,6 +425,31 @@ struct GameView: View {
     private func bestScoreCalculate() {
         if score > bestScore {
             bestScore = score
+        }
+    }
+    private func countStart() {
+        pointUpTimer?.invalidate()
+        pointUpTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+            if grafUpTime > 0 {
+                grafUpTime -= 1
+                getScore = 2
+            } else if grafUpTime <= 0{
+                pointUpTimer?.invalidate()
+                getScore = 1
+                scoreColor = false
+                grafTimeOpacity = 0.0
+            }
+        }
+    }
+    private func getTimeAnimation() {
+        withAnimation(.linear(duration: 0.5)) {
+            getTimeOpacity -= 1.0
+            getTimeOffset -= 100
+            gameTimeCount += getTime
+            if getTimeOpacity <= 0.0 {
+                getTimeOffset = 100
+                getTimeOpacity = 1.0
+            }
         }
     }
 }

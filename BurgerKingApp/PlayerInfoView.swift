@@ -12,6 +12,7 @@ struct PlayerInfoView: View {
     @State private var MoveToPlay: Bool = false
     @State private var showBugers: Bool = false
     @State private var logoSize: CGFloat = 150
+    @FocusState private var isFocused: Bool
     var body: some View {
         ZStack {
             Color.black.edgesIgnoringSafeArea(.all)
@@ -29,7 +30,7 @@ struct PlayerInfoView: View {
                             .padding()
                             .background(Color.white.opacity(0.5))
                             .cornerRadius(15)
-                            .keyboardType(.default)
+                            .focused($isFocused)
                     }
                     .frame(width:UIScreen.main.bounds.width/2)
                 Button(action: {
@@ -51,7 +52,7 @@ struct PlayerInfoView: View {
             GameView()
         }
         .onDisappear() {
-            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            isFocused = false
         }
     }
 }
