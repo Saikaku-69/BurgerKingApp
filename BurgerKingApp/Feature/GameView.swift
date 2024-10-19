@@ -231,9 +231,9 @@ struct GameView: View {
                     bestScoreCalculate()
                 }) {
                     Text("ゲーム開始")
+                        .padding()
+                        .border(.blue)
                 }
-                .padding()
-                .border(.blue)
             }
             if gameOver {
                 GameResultView()
@@ -354,9 +354,9 @@ struct GameView: View {
             charChange = true
             withAnimation(.linear(duration:1)) {
                 backgroundOpacity += 1.0
+                playerOpacity = 0.0
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                playerOpacity = 0.0
                 hStackCount = 0
                 gameOver = true
                 backgroundOpacity = 0
