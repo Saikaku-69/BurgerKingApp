@@ -1,22 +1,38 @@
 import SwiftUI
 
 struct PopoverTestView: View {
-    @State private var isPopoverPresented: Bool = false
+    @State private var isPopoverPresented = false
+    @State private var isPopoverTest = false
     
     var body: some View {
-        Text("Tap to show popover")
-            .padding()
-            .onTapGesture {
-                isPopoverPresented = true
-            }
-            .popover(isPresented: $isPopoverPresented, arrowEdge: .top) {
-                VStack {
-                    Text("Popover with anchor")
-                    Button("Close") {
-                        isPopoverPresented = false
-                    }
-                }
-                .frame(width: 30, height: 30)
+        Button("Show Popover") {
+            isPopoverPresented.toggle()
+        }
+        .buttonStyle(.borderedProminent)
+        .popover(isPresented: $isPopoverPresented,
+                 attachmentAnchor: .point(.topLeading),
+                 content: {
+            Text("This is a popover")
+                .padding()
+                .frame(minWidth: 100, maxHeight: 300)
+                .background(.red)
+                .presentationCompactAdaptation(.popover)
+        })
+        .padding(.bottom,100)
+        
+        //
+        Circle()
+            .frame(width:50)
+            .popover(isPresented: $isPopoverTest,
+                     attachmentAnchor: .point(.topLeading),
+                     content: {
+                Text("This is a Circle")
+                    .padding(.horizontal)
+                    .frame(minWidth:50,maxHeight: 50)
+                    .presentationCompactAdaptation(.popover)
+            })
+            .onAppear() {
+                isPopoverTest = true
             }
     }
 }
