@@ -13,6 +13,8 @@ struct Burger:Identifiable {
     var id = UUID()
     var imageName: String
     var burgerPosition: CGPoint
+    //TestPopover
+    var isBurgerPopover: Bool = false
     
     static var burgerWidth: CGFloat = 30
     static var burgerHeight: CGFloat = 30
@@ -29,9 +31,11 @@ struct GameView: View {
     @State private var bonusTimeTxt:Bool = false
     @State private var showScore:Bool = true
     @State private var charChange:Bool = true
+    @State private var closePopover:Bool = false
+    //TestPopover
+    @State private var hasTriggered:Bool = false
     //スコアup中のTimer
     @State private var grafUpTime: Double = 0
-    @State private var pointUpTimer: Timer?
     @State private var grafTimeOpacity: Double = 0.0
     @AppStorage("bestScoreKey") private var bestScore: Int = 0
     @AppStorage("playerNameKey") private var playerName: String = ""
@@ -66,6 +70,11 @@ struct GameView: View {
     @State private var fallingTimer: Timer?
     @State private var createBurgerTimer: Timer?
     @State private var pooTimer: Timer?
+    @State private var pointUpTimer: Timer?
+    //時間止まった時の計算用タイマー
+    @State private var stopOfTime: Double = 0
+    @State private var stopOfCountTime: Double = 0
+    @State private var stopOfCountTimer: Timer?
     //落ちるスピード&生成スピード
     @State private var fallingSpeed:Double = 0.005
     @State private var createSpeed:Double = 0.3
@@ -177,6 +186,20 @@ struct GameView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width:Burger.burgerWidth)
+                        //TestPopover
+                            .popover(isPresented: Binding(
+                                get: { item.isBurgerPopover },
+                                set: { newValue in
+                                    if let index = GetBurger.firstIndex(where: { $0.id == item.id }) {
+                                        GetBurger[index].isBurgerPopover = newValue
+                                    }
+                                }
+                            )) {
+                                Text("is Burger")
+                                    .background(Color.white)
+                                    .frame(minWidth: 100, maxHeight: 300)
+                                    .presentationCompactAdaptation(.popover)
+                            }
                             .position(item.burgerPosition)
                     }
                     ForEach(GetPoo) { poo in
@@ -186,7 +209,19 @@ struct GameView: View {
                             .frame(width:Burger.burgerWidth)
                             .position(poo.pooPosition)
                     }
-                    
+                    //TestPopover
+                    if closePopover {
+                        Text("OK")
+                            .foregroundColor(Color.blue)
+                            .padding(.horizontal)
+                            .border(.blue)
+                            .onTapGesture {
+                                if hasTriggered {
+                                    startAllTimer()
+                                }
+                                closePopover = false
+                            }
+                    }
                 }
                 .frame(width: gameScreenWidth,height: gameScreenHeight)
                 .background(Color.gameBackgroundColor)
@@ -231,9 +266,9 @@ struct GameView: View {
                     bestScoreCalculate()
                 }) {
                     Text("ゲーム開始")
+                        .padding()
+                        .border(.blue)
                 }
-                .padding()
-                .border(.blue)
             }
             if gameOver {
                 GameResultView()
@@ -306,6 +341,18 @@ struct GameView: View {
                 if GetBurger[index].burgerPosition.y <= deadLine {
                     withAnimation(.linear) {
                         GetBurger[index].burgerPosition.y += 1
+                        //TestPopover
+                        if itemName.imageName == "Burger" && !hasTriggered {
+                            hasTriggered = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                stopAllTimer()
+                                stopOfTime = gameTimeCount
+                                closePopover = true
+                                if let index = GetBurger.firstIndex(where: { $0.id == itemName.id }) {
+                                    GetBurger[index].isBurgerPopover = true
+                                }
+                            }
+                        }
                     }
                 } else if itemName.imageName == "Burger" {
                     GetBurger.remove(at: index)
@@ -354,9 +401,9 @@ struct GameView: View {
             charChange = true
             withAnimation(.linear(duration:1)) {
                 backgroundOpacity += 1.0
+                playerOpacity = 0.0
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                playerOpacity = 0.0
                 hStackCount = 0
                 gameOver = true
                 backgroundOpacity = 0
@@ -375,9 +422,17 @@ struct GameView: View {
         pooTimer?.invalidate()
         pointUpTimer?.invalidate()
     }
+    private func startAllTimer() {
+        countGameTime()
+        startGame()
+        falling()
+        pooAction()
+        countStart()
+    }
     private func initialGame() {
         gameOver = false
         gameStartButton = true
+        hasTriggered = false
         score = 0
         gameTimeCount = 30
         playerPositionY = UIScreen.main.bounds.height-200
@@ -500,21 +555,6 @@ struct GameView: View {
         withAnimation(.linear(duration: 0.5)) {
             gameTimeCount += getTime
         }
-    }
-}
-extension Color {
-    static var backgroundColor:Color {
-        return Color (
-            Color(hue: 0.7, saturation: 0.5, brightness: 0.7)
-        )
-    }
-}
-extension Color {
-    static var gameBackgroundColor:Color {
-//        return Color (
-//            Color(hue: 0.7, saturation: 0.6, brightness: 0.3)
-//        )
-        return Color.black
     }
 }
 
