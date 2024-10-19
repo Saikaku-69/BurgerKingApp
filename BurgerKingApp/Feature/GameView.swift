@@ -27,6 +27,8 @@ struct GameView: View {
     @State private var backgroundOpacity:Double = 0.0
     @State private var resultOpacity:Double = 0.0
     @State private var bonusTimeTxt:Bool = false
+    @State private var showScore:Bool = true
+    @State private var charChange:Bool = true
     //スコアup中のTimer
     @State private var grafUpTime: Double = 0
     @State private var pointUpTimer: Timer?
@@ -34,14 +36,15 @@ struct GameView: View {
     @AppStorage("bestScoreKey") private var bestScore: Int = 0
     @AppStorage("playerNameKey") private var playerName: String = ""
     @State private var score:Int = 0
-    @State private var gameTimeCount: Double = 20
+    @State private var gameTimeCount: Double = 30
     @State private var getScore:Int = 1
     @State private var getTime:Double = 5
     //確率
-    @State private var grafUpProbability:Int = 5
-    @State private var goldBurgerProbability:Int = 5
-    @State private var clockProbability:Int = 5
-    @State private var vagetableProbability:Int = 5
+    @State private var grafUpProbability:Int = 4
+    @State private var goldBurgerProbability:Int = 4
+    @State private var clockProbability:Int = 4
+    @State private var vagetableProbability:Int = 4
+    @State private var hammerProbability:Int = 4
     //プレイ画面
     @State private var gameScreenWidth:CGFloat = UIScreen.main.bounds.width-50
     @State private var gameScreenHeight:CGFloat = UIScreen.main.bounds.height-200
@@ -103,7 +106,7 @@ struct GameView: View {
                 ZStack {
                     //Play画面
                     VStack {
-                        if !gameOver {
+                        if showScore {
                             Text("BEST SCORE: \(Int(bestScore))")
                                 .foregroundColor(.white)
                                 .fontWeight(.bold)
@@ -147,12 +150,21 @@ struct GameView: View {
                     }
                     .frame(width: gameScreenWidth,height:gameScreenHeight)
                     //PlayerImage
-                    Image("ManDefault")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height:playerFrame)
-                        .position(x:playerPositionX.width + dragPositionX.width + 10,y:playerPositionY - 40)
-                        .opacity(playerOpacity)
+                    if charChange {
+                        Image("ManDefault")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height:playerFrame)
+                            .position(x:playerPositionX.width + dragPositionX.width + 10,y:playerPositionY - 40)
+                            .opacity(playerOpacity)
+                    } else {
+                        Image("ManLight")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height:playerFrame)
+                            .position(x:playerPositionX.width + dragPositionX.width + 10,y:playerPositionY - 40)
+                            .opacity(playerOpacity)
+                    }
                     //当たる判定用mainObject
                     Rectangle()
                         .fill(.red)
@@ -219,12 +231,9 @@ struct GameView: View {
                     bestScoreCalculate()
                 }) {
                     Text("ゲーム開始")
-                        .foregroundColor(Color.white)
-                        .fontWeight(.bold)
-                        .padding()
-                        .background(Color.backgroundColor)
-                        .cornerRadius(15)
                 }
+                .padding()
+                .border(.blue)
             }
             if gameOver {
                 GameResultView()
@@ -264,6 +273,8 @@ struct GameView: View {
             randomImage = "clock"
         } else if randomNumber <= grafUpProbability + goldBurgerProbability + clockProbability + vagetableProbability {
             randomImage = "vagetable"
+        } else if randomNumber <= grafUpProbability + goldBurgerProbability + clockProbability + vagetableProbability + hammerProbability {
+            randomImage = "hammer"
         } else {
             randomImage = "Burger"
         }
@@ -309,6 +320,14 @@ struct GameView: View {
             }
             collision()
             stopGame()
+            checkCharChange()
+        }
+    }
+    private func checkCharChange() {
+        if score >= 200 {
+            charChange = false
+        } else {
+            charChange = true
         }
     }
     private func startGame() {
@@ -331,6 +350,8 @@ struct GameView: View {
             fallingSpeed = 0.005
             grafUpTime = 0
             bonusTimeTxt = false
+            scoreColor = false
+            charChange = true
             withAnimation(.linear(duration:1)) {
                 backgroundOpacity += 1.0
             }
@@ -358,7 +379,7 @@ struct GameView: View {
         gameOver = false
         gameStartButton = true
         score = 0
-        gameTimeCount = 60
+        gameTimeCount = 30
         playerPositionY = UIScreen.main.bounds.height-200
         playerPositionX.width = UIScreen.main.bounds.width/2 - 30
         playerOpacity = 1.0
@@ -395,7 +416,7 @@ struct GameView: View {
                     generateImpactFeedback(for: .heavy)
                     GetBurger.remove(at: index)
                     withAnimation(.linear(duration:0.2)) {
-                        score += 100
+                        score += 20
                     }
                     countdata.getGoldBurgerCount += 1
                 } else if itemName.imageName == "grafup" {
@@ -413,6 +434,16 @@ struct GameView: View {
                     showPoo = true
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                         showPoo = false
+                    }
+                } else if itemName.imageName == "hammer" {
+                    generateImpactFeedback(for: .heavy)
+                    GetBurger.remove(at: index)
+                    if hStackCount > 0 {
+                        hStackCount -= 1
+                        playerPositionY += Burger.burgerHeight
+                        deadLine += Burger.burgerHeight
+                    } else {
+                        score += 1
                     }
                 }
             }
@@ -455,7 +486,7 @@ struct GameView: View {
         pointUpTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             if grafUpTime > 0 {
                 grafUpTime -= 1
-                getScore = 5
+                getScore = 2
             } else if grafUpTime <= 0{
                 pointUpTimer?.invalidate()
                 bonusTimeTxt = false
