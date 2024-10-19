@@ -12,12 +12,15 @@ struct PointPlusTimeView: View {
     @State private var pointUpTimer: Timer?
     var body: some View {
         HStack {
-            Text("(")
+            Text("スコア増加中")
+                .opacity(0.5)
+            Text("残り時間:")
             Text("\(Int(pointUpTimeCount))")
                 .font(.system(size:20))
                 .foregroundColor(.red)
-            Text(")")
+            Text("s")
         }
+        .font(.system(size:15))
         .foregroundColor(.white)
     }
 }
