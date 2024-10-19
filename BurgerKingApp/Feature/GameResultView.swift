@@ -9,7 +9,7 @@ import SwiftUI
 class countData:ObservableObject {
     static let shared = countData()
     @Published var getBurgerCount:Int = 0
-    @Published var totalGameTime:Double = 60
+    @Published var totalGameTime:Double = 30
     @Published var getGoldBurgerCount:Int = 0
     @Published var bonusTime:Double = 0
 }
@@ -23,7 +23,7 @@ struct GameResultView: View {
     @ObservedObject var countdata = countData.shared
     
     var body: some View {
-        let countstr = [countStr(imgName:"Burger", Txt:"消化したバーガーの数:",data:"\(countdata.getBurgerCount)"),
+        let countstr = [countStr(imgName:"Burger", Txt:"消化したバーガー:",data:"\(countdata.getBurgerCount)"),
                         countStr(imgName: "GoldBurger", Txt:"ゴールドバーガー:",data:"\(countdata.getGoldBurgerCount)"),
                         countStr(imgName: "grafup", Txt:"消化量増加持続時間:",data:"\(Int(countdata.bonusTime))s"),
                         countStr(imgName: "clock", Txt:"トータルゲーム時間:",data:"\(Int(countdata.totalGameTime))s")
