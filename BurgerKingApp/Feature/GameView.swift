@@ -26,6 +26,7 @@ struct GameView: View {
     @State private var backgroundColor: Color = .backgroundColor
     @State private var backgroundOpacity:Double = 0.0
     @State private var resultOpacity:Double = 0.0
+    @State private var bonusTimeTxt:Bool = false
     //スコアup中のTimer
     @State private var grafUpTime: Double = 0
     @State private var pointUpTimer: Timer?
@@ -122,7 +123,7 @@ struct GameView: View {
                             .frame(width:UIScreen.main.bounds.width/2)
                         }
                         VStack {
-                            if !gameOver {
+                            if bonusTimeTxt {
                                 PointPlusTimeView(pointUpTimeCount: $grafUpTime)
                                     .opacity(grafTimeOpacity)
                             }
@@ -248,10 +249,7 @@ struct GameView: View {
             playerPositionX.width = UIScreen.main.bounds.width/2 - 30
         }
         .onDisappear() {
-            countTimer?.invalidate()
-            createBurgerTimer?.invalidate()
-            fallingTimer?.invalidate()
-            pooTimer?.invalidate()
+            stopAllTimer()
         }
     }
     //Burger構造体
@@ -331,6 +329,8 @@ struct GameView: View {
             bestScoreCalculate()
             deadLine = UIScreen.main.bounds.height-200
             fallingSpeed = 0.005
+            grafUpTime = 0
+            bonusTimeTxt = false
             withAnimation(.linear(duration:1)) {
                 backgroundOpacity += 1.0
             }
@@ -403,6 +403,7 @@ struct GameView: View {
                     GetBurger.remove(at: index)
                     grafTimeOpacity = 1.0
                     scoreColor = true
+                    bonusTimeTxt = true
                     grafUpTime += 5
                     countStart()
                     countdata.bonusTime += 5
@@ -457,6 +458,7 @@ struct GameView: View {
                 getScore = 5
             } else if grafUpTime <= 0{
                 pointUpTimer?.invalidate()
+                bonusTimeTxt = false
                 getScore = 1
                 scoreColor = false
                 grafTimeOpacity = 0.0
