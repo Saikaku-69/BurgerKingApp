@@ -23,10 +23,10 @@ struct GameResultView: View {
     @ObservedObject var countdata = countData.shared
     
     var body: some View {
-        let countstr = [countStr(imgName:"Burger", Txt:"消化したバーガー:",data:"\(countdata.getBurgerCount)"),
-                        countStr(imgName: "GoldBurger", Txt:"ゴールドバーガー:",data:"\(countdata.getGoldBurgerCount)"),
-                        countStr(imgName: "grafup", Txt:"消化量増加持続時間:",data:"\(Int(countdata.bonusTime))s"),
-                        countStr(imgName: "clock", Txt:"トータルゲーム時間:",data:"\(Int(countdata.totalGameTime))s")
+        let countstr = [countStr(imgName:"Burger", Txt:"消化したバーガー:",data:"\(countdata.getBurgerCount)個"),
+                        countStr(imgName: "GoldBurger", Txt:"ゴールドバーガー:",data:"\(countdata.getGoldBurgerCount)個"),
+                        countStr(imgName: "grafup", Txt:"消化量増加持続時間:",data:"\(Int(countdata.bonusTime))秒"),
+                        countStr(imgName: "clock", Txt:"トータルゲーム時間:",data:"\(Int(countdata.totalGameTime))秒")
         ]
         ZStack {
             Image("bklogotop")

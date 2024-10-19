@@ -231,12 +231,9 @@ struct GameView: View {
                     bestScoreCalculate()
                 }) {
                     Text("ゲーム開始")
-                        .foregroundColor(Color.white)
-                        .fontWeight(.bold)
-                        .padding()
-                        .background(Color.backgroundColor)
-                        .cornerRadius(15)
                 }
+                .padding()
+                .border(.blue)
             }
             if gameOver {
                 GameResultView()
