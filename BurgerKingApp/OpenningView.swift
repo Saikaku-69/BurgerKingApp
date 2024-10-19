@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct OpenningView: View {
-    @State private var createBurgers: [Bool] = Array(repeating: false, count: 15)
-    @State private var positions: [CGPoint] = Array(repeating: .zero, count: 15)
-    @State private var sizes: [CGFloat] = Array(repeating: .zero, count: 15)
+    @State private var createBurgers: [Bool] = Array(repeating: false, count: 5)
+    @State private var positions: [CGPoint] = Array(repeating: .zero, count: 5)
+    @State private var sizes: [CGFloat] = Array(repeating: .zero, count: 5)
     @State private var MoveToGameView = false
     var body: some View {
         ZStack {
@@ -26,9 +26,11 @@ struct OpenningView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear() {
-            showBurgers()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
-                MoveToGameView = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                showBurgers()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    MoveToGameView = true
+                }
             }
         }
         .fullScreenCover(isPresented:$MoveToGameView) {
@@ -37,7 +39,7 @@ struct OpenningView: View {
     }
     private func showBurgers() {
         for index in 0..<createBurgers.count {
-            let delay = Double(index) * 0.2
+            let delay = Double(index) * 0.3
             DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
                 createBurgers[index] = true
                 positions[index] = randomPosition()
@@ -50,8 +52,10 @@ struct OpenningView: View {
         return randomSize
     }
     private func randomPosition() -> CGPoint{
-        let randomX = CGFloat.random(in:0...UIScreen.main.bounds.width)
-        let randomY = CGFloat.random(in:0...UIScreen.main.bounds.height)
+        let minX = UIScreen.main.bounds.width/4
+        let minY = UIScreen.main.bounds.height/6
+        let randomX = CGFloat.random(in:minX...UIScreen.main.bounds.width - minX)
+        let randomY = CGFloat.random(in:minY...UIScreen.main.bounds.height - minY)
         
         return CGPoint(x: randomX, y: randomY)
     }
