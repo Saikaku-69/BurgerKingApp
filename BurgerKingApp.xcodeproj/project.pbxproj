@@ -12,6 +12,8 @@
 		7F2275052CC1238C00F00A0D /* OpenningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2275042CC1238B00F00A0D /* OpenningView.swift */; };
 		7F2275072CC12A5400F00A0D /* PlayerInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2275062CC12A5400F00A0D /* PlayerInfoView.swift */; };
 		7F5A9DE52CC24FA3009EC03D /* PointPlusTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5A9DE42CC24FA2009EC03D /* PointPlusTimeView.swift */; };
+		7F5A9DE72CC42382009EC03D /* PopoverTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5A9DE62CC42382009EC03D /* PopoverTestView.swift */; };
+		7F5A9DE92CC44D7B009EC03D /*  ColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5A9DE82CC44D7B009EC03D /*  ColorView.swift */; };
 		7F91E0902CBB7E190017CD64 /* BurgerKingAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F91E08F2CBB7E190017CD64 /* BurgerKingAppApp.swift */; };
 		7F91E0922CBB7E190017CD64 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F91E0912CBB7E190017CD64 /* ContentView.swift */; };
 		7F91E0942CBB7E1E0017CD64 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7F91E0932CBB7E1E0017CD64 /* Assets.xcassets */; };
@@ -25,6 +27,8 @@
 		7F2275042CC1238B00F00A0D /* OpenningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenningView.swift; sourceTree = "<group>"; };
 		7F2275062CC12A5400F00A0D /* PlayerInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerInfoView.swift; sourceTree = "<group>"; };
 		7F5A9DE42CC24FA2009EC03D /* PointPlusTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointPlusTimeView.swift; sourceTree = "<group>"; };
+		7F5A9DE62CC42382009EC03D /* PopoverTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverTestView.swift; sourceTree = "<group>"; };
+		7F5A9DE82CC44D7B009EC03D /*  ColorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " ColorView.swift"; sourceTree = "<group>"; };
 		7F91E08C2CBB7E190017CD64 /* BurgerKingApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BurgerKingApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F91E08F2CBB7E190017CD64 /* BurgerKingAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurgerKingAppApp.swift; sourceTree = "<group>"; };
 		7F91E0912CBB7E190017CD64 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -50,6 +54,8 @@
 				7F2275042CC1238B00F00A0D /* OpenningView.swift */,
 				7F2275062CC12A5400F00A0D /* PlayerInfoView.swift */,
 				7F5A9DE42CC24FA2009EC03D /* PointPlusTimeView.swift */,
+				7F5A9DE62CC42382009EC03D /* PopoverTestView.swift */,
+				7F5A9DE82CC44D7B009EC03D /*  ColorView.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -175,8 +181,10 @@
 				7F19D2EE2CBFE405009745DD /* PooView.swift in Sources */,
 				7F5A9DE52CC24FA3009EC03D /* PointPlusTimeView.swift in Sources */,
 				7F2275052CC1238C00F00A0D /* OpenningView.swift in Sources */,
+				7F5A9DE92CC44D7B009EC03D /*  ColorView.swift in Sources */,
 				7F91E09F2CBB81AD0017CD64 /* GameView.swift in Sources */,
 				7F2275072CC12A5400F00A0D /* PlayerInfoView.swift in Sources */,
+				7F5A9DE72CC42382009EC03D /* PopoverTestView.swift in Sources */,
 				7F91E0902CBB7E190017CD64 /* BurgerKingAppApp.swift in Sources */,
 				7F19D2F02CBFF805009745DD /* GameResultView.swift in Sources */,
 			);
