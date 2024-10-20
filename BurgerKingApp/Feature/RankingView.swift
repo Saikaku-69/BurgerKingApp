@@ -15,8 +15,12 @@ class PlayerRank:ObservableObject {
 
 struct RankingView:View {
     @ObservedObject var playerRank = PlayerRank.data
-    @AppStorage("playerName") var pName:String = ""
-    @AppStorage("playerScore") var pScore:Int = 0
+    @AppStorage("nameArray") var nameArrayData: String = "" // 用于存储名字的字符串
+    @AppStorage("rankArray") var rankArrayData: String = "" // 用于存储分数的字符串
+    @State private var nameArray: [String] = []
+    @State private var rankArray: [Int] = []
+    let trophies = ["trophyGold","trophySilver","trophyBronze","medal"]
+    
     var body: some View {
         ZStack {
             Image("bklogotop")
@@ -30,19 +34,23 @@ struct RankingView:View {
                 .frame(width:200)
                 .offset(y:110)
             VStack(alignment: .leading) {
-                ForEach(0..<4,id: \.self) { data in
+                ForEach(0..<min(rankArray.count, 4),id: \.self) { index in
                     HStack {
-                        Image("trophyGold")
+                        Image(trophies[index])
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 30)
-                        Text("\(pName)さん")
+                        Text("\(nameArray[index])さん")
                         Spacer()
-                        Image("Burger")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 20)
-                        Text("\(pScore)個")
+                        HStack {
+                            Image("Burger")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 20)
+                            Spacer()
+                            Text("\(rankArray[index])個")
+                        }
+                        .frame(width:80)
                     }
                     .padding(5)
                     .background(Color.resultTxtColor)
@@ -54,13 +62,67 @@ struct RankingView:View {
             .background(Color.black)
             .cornerRadius(20)
             .onAppear() {
-                if playerRank.score > pScore {
-                    pName = playerRank.name
-                    pScore = playerRank.score
-                }
+                loadStoredData() // 加载存储的数据
+                updateScores(playerName: playerRank.name, newScore: playerRank.score) // 更新分数
             }
         }
     }
+    private func updateScores(playerName: String, newScore: Int) {
+        // 检查是否已存在该玩家的记录
+        if let index = nameArray.firstIndex(of: playerName) {
+            // 如果存在并且新分数更高，则更新分数
+            if newScore > rankArray[index] {
+                rankArray[index] = newScore
+            }
+        } else {
+            // 如果不存在，则添加新的记录
+            nameArray.append(playerName)
+            rankArray.append(newScore)
+        }
+        // 对数组进行排序，创建一个分数和名字的元组数组
+        let rankedScores = zip(rankArray, nameArray).sorted { $0.0 > $1.0 }
+        rankArray = rankedScores.map { $0.0 }
+        nameArray = rankedScores.map { $0.1 }
+        // 确保数组最多只有四个元素
+        if rankArray.count > 4 {
+            nameArray.removeLast() // 删除对应的名字
+            rankArray.removeLast() // 删除最小的分数
+        }
+        // 更新存储的数据
+        saveStoredData()
+    }
+    private func saveStoredData() {
+        nameArrayData = nameArray.joined(separator: ",") // 将名字数组转换为字符串
+        rankArrayData = rankArray.map { String($0) }.joined(separator: ",") // 将分数数组转换为字符串
+    }
+    private func loadStoredData() {
+        // 从存储的字符串中加载数据
+        nameArray = nameArrayData.split(separator: ",").map { String($0) } // 转换为 String 数组
+        rankArray = rankArrayData.split(separator: ",").compactMap { Int($0) } // 转换为 Int 数组
+    }
+//    private func loadStoredData() {
+//        DispatchQueue.global(qos: .background).async {
+//            // 从存储的字符串中加载数据
+//            let loadedNames = nameArrayData.split(separator: ",").map { String($0) }
+//            let loadedRanks = rankArrayData.split(separator: ",").compactMap { Int($0) }
+//            
+//            DispatchQueue.main.async {
+//                nameArray = loadedNames // 主线程更新 UI
+//                rankArray = loadedRanks
+//            }
+//        }
+//    }
+//    private func saveStoredData() {
+//        DispatchQueue.global(qos: .background).async {
+//            let namesString = nameArray.joined(separator: ",")
+//            let ranksString = rankArray.map { String($0) }.joined(separator: ",")
+//            
+//            DispatchQueue.main.async {
+//                nameArrayData = namesString // 主线程更新存储
+//                rankArrayData = ranksString
+//            }
+//        }
+//    }
 }
 #Preview {
     RankingView()
