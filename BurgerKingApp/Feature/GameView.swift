@@ -90,6 +90,8 @@ struct GameView: View {
     @State private var moveToPlayInfoView:Bool = false
     @State private var moveToRankView:Bool = false
     @State private var resetDisable:Bool = false
+    //通知Toggle
+    @State private var popoverSwitch:Bool = true
     var body: some View {
         ZStack {
             backgroundColor
@@ -133,15 +135,16 @@ struct GameView: View {
                     Spacer()
                     HStack {
                         Spacer()
-                        Button(action: {
-                            moveToRankView = true
-                        }, label: {
-                            if !resetDisable {
-                                Image(systemName: "gear")
-                                    .opacity(0.7)
-                                    .font(.body)
-                            }
-                        })
+//                        Button(action: {
+//                            moveToRankView = true
+//                        }, label: {
+//                            if !resetDisable {
+//                                Image(systemName: "gear")
+//                                    .opacity(0.7)
+//                                    .font(.body)
+//                            }
+//                        })
+                        Toggle("Switch", isOn: $popoverSwitch)
                     }
                     .frame(width:50)
                 }
@@ -425,15 +428,17 @@ struct GameView: View {
                     withAnimation(.linear) {
                         GetBurger[index].burgerPosition.y += 1
                         //TestPopover Burger
-                        if !GetBurger[index].hasTriggered && !checkPopover {
-                            GetBurger[index].hasTriggered = true
-                            checkPopover = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                stopAllTimer()
-                                stopOfTime = gameTimeCount
-                                closePopover = true
-                                if let index = GetBurger.firstIndex(where: { $0.id == itemName.id }) {
-                                    GetBurger[index].isBurgerPopover = true
+                        if !popoverSwitch {
+                            if !GetBurger[index].hasTriggered && !checkPopover {
+                                GetBurger[index].hasTriggered = true
+                                checkPopover = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                    stopAllTimer()
+                                    stopOfTime = gameTimeCount
+                                    closePopover = true
+                                    if let index = GetBurger.firstIndex(where: { $0.id == itemName.id }) {
+                                        GetBurger[index].isBurgerPopover = true
+                                    }
                                 }
                             }
                         }
