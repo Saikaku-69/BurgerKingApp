@@ -15,6 +15,7 @@ struct Burger:Identifiable {
     var burgerPosition: CGPoint
     //TestPopover
     var isBurgerPopover: Bool = false
+    var hasTriggered:Bool = false
     
     static var burgerWidth: CGFloat = 30
     static var burgerHeight: CGFloat = 30
@@ -32,8 +33,7 @@ struct GameView: View {
     @State private var showScore:Bool = true
     @State private var charChange:Bool = true
     @State private var closePopover:Bool = false
-    //TestPopover
-    @State private var hasTriggered:Bool = false
+    @State private var checkPopover:Bool = false
     //スコアup中のTimer
     @State private var grafUpTime: Double = 0
     @State private var grafTimeOpacity: Double = 0.0
@@ -195,10 +195,37 @@ struct GameView: View {
                                     }
                                 }
                             )) {
-                                Text("is Burger")
-                                    .background(Color.white)
-                                    .frame(minWidth: 100, maxHeight: 300)
-                                    .presentationCompactAdaptation(.popover)
+                                if item.imageName == "Burger" {
+                                    Text("消化量+1")
+                                        .font(.caption2)
+                                        .frame(minWidth: 80, maxHeight: 50)
+                                        .presentationCompactAdaptation(.popover)
+                                } else if item.imageName == "GoldBurger" {
+                                    Text("消化量+20")
+                                        .font(.caption2)
+                                        .frame(minWidth: 80, maxHeight: 50)
+                                        .presentationCompactAdaptation(.popover)
+                                } else if item.imageName == "grafup" {
+                                    Text("5秒間消化量2倍")
+                                        .font(.caption2)
+                                        .frame(minWidth: 80, maxHeight: 50)
+                                        .presentationCompactAdaptation(.popover)
+                                } else if item.imageName == "clock" {
+                                    Text("ゲーム時間5秒増加")
+                                        .font(.caption2)
+                                        .frame(minWidth: 80, maxHeight: 50)
+                                        .presentationCompactAdaptation(.popover)
+                                } else if item.imageName == "hammer" {
+                                    Text("土を1階減らす")
+                                        .font(.caption2)
+                                        .frame(minWidth: 80, maxHeight: 50)
+                                        .presentationCompactAdaptation(.popover)
+                                } else if item.imageName == "vagetable" {
+                                    Text("食べない方が良いかも")
+                                        .font(.caption2)
+                                        .frame(minWidth: 80, maxHeight: 50)
+                                        .presentationCompactAdaptation(.popover)
+                                }
                             }
                             .position(item.burgerPosition)
                     }
@@ -216,10 +243,10 @@ struct GameView: View {
                             .padding(.horizontal)
                             .border(.blue)
                             .onTapGesture {
-                                if hasTriggered {
+                                closePopover = false
+                                if checkPopover {
                                     startAllTimer()
                                 }
-                                closePopover = false
                             }
                     }
                 }
@@ -341,9 +368,10 @@ struct GameView: View {
                 if GetBurger[index].burgerPosition.y <= deadLine {
                     withAnimation(.linear) {
                         GetBurger[index].burgerPosition.y += 1
-                        //TestPopover
-                        if itemName.imageName == "Burger" && !hasTriggered {
-                            hasTriggered = true
+                        //TestPopover Burger
+                        if !GetBurger[index].hasTriggered && !checkPopover {
+                            GetBurger[index].hasTriggered = true
+                            checkPopover = true
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                 stopAllTimer()
                                 stopOfTime = gameTimeCount
@@ -432,7 +460,7 @@ struct GameView: View {
     private func initialGame() {
         gameOver = false
         gameStartButton = true
-        hasTriggered = false
+        checkPopover = false
         score = 0
         gameTimeCount = 30
         playerPositionY = UIScreen.main.bounds.height-200
