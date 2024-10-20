@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct PlayerInfoView: View {
+    @ObservedObject var playerRank = PlayerRank.data
     @State private var playerName: String = ""
     @State private var MoveToPlay: Bool = false
     @State private var logoSize: CGFloat = 150
@@ -22,7 +23,7 @@ struct PlayerInfoView: View {
                     isFocused = false
                 }
             VStack {
-                Section(header: Text("基本情報")
+                Section(header: Text("プレーヤーネーム")
                     .foregroundColor(.white)
                     .fontWeight(.bold)) {
                         TextField("名前", text: $playerName)
@@ -41,6 +42,8 @@ struct PlayerInfoView: View {
                             showBurgers = true
                         }
                     }
+                    //player name 処理
+                    playerRank.name = playerName
                 }) {
                     Text("遊びに行く")
                 }
@@ -63,9 +66,6 @@ struct PlayerInfoView: View {
                     .background(Color.black)
                     .offset(y:-logoOffset)
             }
-//            if showBurgers {
-//                OpenningView()
-//            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onDisappear() {

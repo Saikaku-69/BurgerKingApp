@@ -15,6 +15,7 @@ struct Burger:Identifiable {
     var burgerPosition: CGPoint
     //TestPopover
     var isBurgerPopover: Bool = false
+    var hasTriggered:Bool = false
     
     static var burgerWidth: CGFloat = 30
     static var burgerHeight: CGFloat = 30
@@ -25,6 +26,7 @@ struct Poo:Identifiable {
 }
 struct GameView: View {
     @ObservedObject private var countdata = countData.shared
+    @ObservedObject var playerRank = PlayerRank.data
     @State private var backgroundColor: Color = .backgroundColor
     @State private var backgroundOpacity:Double = 0.0
     @State private var resultOpacity:Double = 0.0
@@ -32,13 +34,11 @@ struct GameView: View {
     @State private var showScore:Bool = true
     @State private var charChange:Bool = true
     @State private var closePopover:Bool = false
-    //TestPopover
-    @State private var hasTriggered:Bool = false
+    @State private var checkPopover:Bool = false
     //スコアup中のTimer
     @State private var grafUpTime: Double = 0
     @State private var grafTimeOpacity: Double = 0.0
-    @AppStorage("bestScoreKey") private var bestScore: Int = 0
-    @AppStorage("playerNameKey") private var playerName: String = ""
+    @AppStorage("lastScoreKey") private var lastScore: Int = 0
     @State private var score:Int = 0
     @State private var gameTimeCount: Double = 30
     @State private var getScore:Int = 1
@@ -86,6 +86,10 @@ struct GameView: View {
     @State private var gameStartButton:Bool = true
     @State private var gameOver:Bool = false
     @State private var scoreColor:Bool = false
+    @State private var resultChanged:Bool = true
+    @State private var moveToPlayInfoView:Bool = false
+    @State private var moveToRankView:Bool = false
+    @State private var resetDisable:Bool = false
     var body: some View {
         ZStack {
             backgroundColor
@@ -99,6 +103,18 @@ struct GameView: View {
                 }
             VStack {
                 HStack {
+                    if !resetDisable {
+                        Button(action: {
+                            moveToPlayInfoView = true
+                        }, label: {
+                            VStack(alignment:.leading, spacing: 0) {
+                                Image(systemName: "arrow.backward")
+                                Text("Back")
+                            }.font(.caption)
+                        })
+                        .disabled(resetDisable)
+                    }
+                    Spacer()
                     Image("clock")
                         .resizable()
                         .frame(width: 30,height: 30)
@@ -107,16 +123,27 @@ struct GameView: View {
                         .fontWeight(.bold)
                     Text("\(Int(gameTimeCount))")
                         .font(.system(size: 40))
+                    Spacer()
+                    if !resetDisable {
+                        Button(action: {
+                            moveToRankView = true
+                        }, label: {
+                            VStack(alignment:.trailing, spacing: 0) {
+                                Image(systemName: "arrow.right")
+                                Text("Next")
+                            }.font(.caption)
+                        })
+                        .disabled(resetDisable)
+                    }
                 }
                 .foregroundColor(.white)
                 .fontWeight(.bold)
                 .frame(width: gameScreenWidth,height: 30)
-                
                 ZStack {
                     //Play画面
                     VStack {
                         if showScore {
-                            Text("BEST SCORE: \(Int(bestScore))")
+                            Text("LAST GAME: \(lastScore)")
                                 .foregroundColor(.white)
                                 .fontWeight(.bold)
                                 .opacity(0.5)
@@ -195,10 +222,37 @@ struct GameView: View {
                                     }
                                 }
                             )) {
-                                Text("is Burger")
-                                    .background(Color.white)
-                                    .frame(minWidth: 100, maxHeight: 300)
-                                    .presentationCompactAdaptation(.popover)
+                                if item.imageName == "Burger" {
+                                    Text("消化量+1")
+                                        .font(.caption2)
+                                        .frame(minWidth: 80, maxHeight: 50)
+                                        .presentationCompactAdaptation(.popover)
+                                } else if item.imageName == "GoldBurger" {
+                                    Text("消化量+20")
+                                        .font(.caption2)
+                                        .frame(minWidth: 80, maxHeight: 50)
+                                        .presentationCompactAdaptation(.popover)
+                                } else if item.imageName == "grafup" {
+                                    Text("5秒間消化量2倍")
+                                        .font(.caption2)
+                                        .frame(minWidth: 80, maxHeight: 50)
+                                        .presentationCompactAdaptation(.popover)
+                                } else if item.imageName == "clock" {
+                                    Text("ゲーム時間5秒増加")
+                                        .font(.caption2)
+                                        .frame(minWidth: 80, maxHeight: 50)
+                                        .presentationCompactAdaptation(.popover)
+                                } else if item.imageName == "hammer" {
+                                    Text("土を1階減らす")
+                                        .font(.caption2)
+                                        .frame(minWidth: 80, maxHeight: 50)
+                                        .presentationCompactAdaptation(.popover)
+                                } else if item.imageName == "vagetable" {
+                                    Text("食べない方が良いかも")
+                                        .font(.caption2)
+                                        .frame(minWidth: 80, maxHeight: 50)
+                                        .presentationCompactAdaptation(.popover)
+                                }
                             }
                             .position(item.burgerPosition)
                     }
@@ -216,10 +270,10 @@ struct GameView: View {
                             .padding(.horizontal)
                             .border(.blue)
                             .onTapGesture {
-                                if hasTriggered {
+                                closePopover = false
+                                if checkPopover {
                                     startAllTimer()
                                 }
-                                closePopover = false
                             }
                     }
                 }
@@ -263,7 +317,7 @@ struct GameView: View {
                 Button(action: {
                     gameStartButton = false
                     startGame()
-                    bestScoreCalculate()
+                    resetDisable = true
                 }) {
                     Text("ゲーム開始")
                         .padding()
@@ -271,9 +325,23 @@ struct GameView: View {
                 }
             }
             if gameOver {
-                GameResultView()
+                ZStack {
+                    if resultChanged {
+                        GameResultView()
+                    } else {
+                        RankingView()
+                    }
+                    Button(action: {
+                        resultChanged.toggle()
+                    }) {
+                        Rectangle()
+                            .fill(.clear)
+                            .frame(width:250,height:180)
+                    }
+                }
                 Button(action: {
                     initialGame()
+                    resetDisable = false
                 }) {
                     Text("Homeに戻る")
                         .fontWeight(.bold)
@@ -289,6 +357,12 @@ struct GameView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .fullScreenCover(isPresented: $moveToPlayInfoView) {
+            PlayerInfoView()
+        }
+        .fullScreenCover(isPresented: $moveToRankView) {
+            TotalRankView()
+        }
         .onAppear() {
             playerPositionX.width = UIScreen.main.bounds.width/2 - 30
         }
@@ -341,9 +415,10 @@ struct GameView: View {
                 if GetBurger[index].burgerPosition.y <= deadLine {
                     withAnimation(.linear) {
                         GetBurger[index].burgerPosition.y += 1
-                        //TestPopover
-                        if itemName.imageName == "Burger" && !hasTriggered {
-                            hasTriggered = true
+                        //TestPopover Burger
+                        if !GetBurger[index].hasTriggered && !checkPopover {
+                            GetBurger[index].hasTriggered = true
+                            checkPopover = true
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                 stopAllTimer()
                                 stopOfTime = gameTimeCount
@@ -388,11 +463,11 @@ struct GameView: View {
     }
     private func stopGame() {
         if gameTimeCount <= 0 {
+            playerRank.score = score
             stopAllTimer()
             playerDisable = true
             GetBurger.removeAll()
             GetPoo.removeAll()
-            bestScoreCalculate()
             deadLine = UIScreen.main.bounds.height-200
             fallingSpeed = 0.005
             grafUpTime = 0
@@ -432,7 +507,9 @@ struct GameView: View {
     private func initialGame() {
         gameOver = false
         gameStartButton = true
-        hasTriggered = false
+        checkPopover = false
+        resultChanged = true
+        lastScoreCalculate()
         score = 0
         gameTimeCount = 30
         playerPositionY = UIScreen.main.bounds.height-200
@@ -531,10 +608,8 @@ struct GameView: View {
             fallingSpeed = 0.002
         }
     }
-    private func bestScoreCalculate() {
-        if score > bestScore {
-            bestScore = score
-        }
+    private func lastScoreCalculate() {
+        lastScore = score
     }
     private func countStart() {
         pointUpTimer?.invalidate()
