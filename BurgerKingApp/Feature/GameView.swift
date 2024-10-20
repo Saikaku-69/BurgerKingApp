@@ -77,7 +77,7 @@ struct GameView: View {
     @State private var stopOfCountTimer: Timer?
     //落ちるスピード&生成スピード
     @State private var fallingSpeed:Double = 0.005
-    @State private var createSpeed:Double = 0.3
+    @State private var createSpeed:Double = 0.4
     //ペナルティ階段
     @State private var hStackCount:CGFloat = 0
     @State private var showPoo: Bool = false
@@ -90,6 +90,8 @@ struct GameView: View {
     @State private var moveToPlayInfoView:Bool = false
     @State private var moveToRankView:Bool = false
     @State private var resetDisable:Bool = false
+    //通知Toggle
+    @State private var popoverSwitch:Bool = true
     var body: some View {
         ZStack {
             backgroundColor
@@ -103,38 +105,48 @@ struct GameView: View {
                 }
             VStack {
                 HStack {
-                    if !resetDisable {
-                        Button(action: {
-                            moveToPlayInfoView = true
-                        }, label: {
-                            VStack(alignment:.leading, spacing: 0) {
-                                Image(systemName: "arrow.backward")
-                                Text("Back")
-                            }.font(.caption)
-                        })
-                        .disabled(resetDisable)
+                    HStack {
+                        if !resetDisable {
+                            Button(action: {
+                                moveToPlayInfoView = true
+                            }, label: {
+                                VStack(alignment:.leading, spacing: 0) {
+                                    Image(systemName: "arrow.backward")
+                                    Text("Back")
+                                }
+                                .opacity(0.7)
+                                .font(.caption)
+                            })
+                        }
+                        Spacer()
+                    }
+                    .frame(width:50)
+                    Spacer()
+                    HStack {
+                        Image("clock")
+                            .resizable()
+                            .frame(width: 30,height: 30)
+                        Text("GAME TIME: ")
+                            .foregroundColor(.white)
+                            .fontWeight(.bold)
+                        Text("\(Int(gameTimeCount))")
+                            .font(.system(size: 30))
                     }
                     Spacer()
-                    Image("clock")
-                        .resizable()
-                        .frame(width: 30,height: 30)
-                    Text("GAME TIME: ")
-                        .foregroundColor(.white)
-                        .fontWeight(.bold)
-                    Text("\(Int(gameTimeCount))")
-                        .font(.system(size: 40))
-                    Spacer()
-                    if !resetDisable {
-                        Button(action: {
-                            moveToRankView = true
-                        }, label: {
-                            VStack(alignment:.trailing, spacing: 0) {
-                                Image(systemName: "arrow.right")
-                                Text("Next")
-                            }.font(.caption)
-                        })
-                        .disabled(resetDisable)
+                    HStack {
+                        Spacer()
+//                        Button(action: {
+//                            moveToRankView = true
+//                        }, label: {
+//                            if !resetDisable {
+//                                Image(systemName: "gear")
+//                                    .opacity(0.7)
+//                                    .font(.body)
+//                            }
+//                        })
+                        Toggle("Switch", isOn: $popoverSwitch)
                     }
+                    .frame(width:50)
                 }
                 .foregroundColor(.white)
                 .fontWeight(.bold)
@@ -416,15 +428,17 @@ struct GameView: View {
                     withAnimation(.linear) {
                         GetBurger[index].burgerPosition.y += 1
                         //TestPopover Burger
-                        if !GetBurger[index].hasTriggered && !checkPopover {
-                            GetBurger[index].hasTriggered = true
-                            checkPopover = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                stopAllTimer()
-                                stopOfTime = gameTimeCount
-                                closePopover = true
-                                if let index = GetBurger.firstIndex(where: { $0.id == itemName.id }) {
-                                    GetBurger[index].isBurgerPopover = true
+                        if !popoverSwitch {
+                            if !GetBurger[index].hasTriggered && !checkPopover {
+                                GetBurger[index].hasTriggered = true
+                                checkPopover = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                    stopAllTimer()
+                                    stopOfTime = gameTimeCount
+                                    closePopover = true
+                                    if let index = GetBurger.firstIndex(where: { $0.id == itemName.id }) {
+                                        GetBurger[index].isBurgerPopover = true
+                                    }
                                 }
                             }
                         }
