@@ -13,12 +13,15 @@
 		7F2275072CC12A5400F00A0D /* PlayerInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2275062CC12A5400F00A0D /* PlayerInfoView.swift */; };
 		7F5A9DE52CC24FA3009EC03D /* PointPlusTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5A9DE42CC24FA2009EC03D /* PointPlusTimeView.swift */; };
 		7F5A9DE72CC42382009EC03D /* PopoverTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5A9DE62CC42382009EC03D /* PopoverTestView.swift */; };
-		7F5A9DE92CC44D7B009EC03D /*  ColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5A9DE82CC44D7B009EC03D /*  ColorView.swift */; };
+		7F5A9DE92CC44D7B009EC03D /* ColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5A9DE82CC44D7B009EC03D /* ColorView.swift */; };
 		7F91E0902CBB7E190017CD64 /* BurgerKingAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F91E08F2CBB7E190017CD64 /* BurgerKingAppApp.swift */; };
 		7F91E0922CBB7E190017CD64 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F91E0912CBB7E190017CD64 /* ContentView.swift */; };
 		7F91E0942CBB7E1E0017CD64 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7F91E0932CBB7E1E0017CD64 /* Assets.xcassets */; };
 		7F91E0972CBB7E1E0017CD64 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7F91E0962CBB7E1E0017CD64 /* Preview Assets.xcassets */; };
 		7F91E09F2CBB81AD0017CD64 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F91E09E2CBB81AD0017CD64 /* GameView.swift */; };
+		7FB54BCB2CC515E20065A852 /* RankingViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB54BCA2CC515E20065A852 /* RankingViewTest.swift */; };
+		7FB54BCD2CC523A40065A852 /* RankingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB54BCC2CC523A40065A852 /* RankingView.swift */; };
+		7FB54BD12CC539240065A852 /* TotalRankView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB54BD02CC539240065A852 /* TotalRankView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,13 +31,16 @@
 		7F2275062CC12A5400F00A0D /* PlayerInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerInfoView.swift; sourceTree = "<group>"; };
 		7F5A9DE42CC24FA2009EC03D /* PointPlusTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointPlusTimeView.swift; sourceTree = "<group>"; };
 		7F5A9DE62CC42382009EC03D /* PopoverTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverTestView.swift; sourceTree = "<group>"; };
-		7F5A9DE82CC44D7B009EC03D /*  ColorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " ColorView.swift"; sourceTree = "<group>"; };
+		7F5A9DE82CC44D7B009EC03D /* ColorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorView.swift; sourceTree = "<group>"; };
 		7F91E08C2CBB7E190017CD64 /* BurgerKingApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BurgerKingApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F91E08F2CBB7E190017CD64 /* BurgerKingAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurgerKingAppApp.swift; sourceTree = "<group>"; };
 		7F91E0912CBB7E190017CD64 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7F91E0932CBB7E1E0017CD64 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7F91E0962CBB7E1E0017CD64 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		7F91E09E2CBB81AD0017CD64 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
+		7FB54BCA2CC515E20065A852 /* RankingViewTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingViewTest.swift; sourceTree = "<group>"; };
+		7FB54BCC2CC523A40065A852 /* RankingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingView.swift; sourceTree = "<group>"; };
+		7FB54BD02CC539240065A852 /* TotalRankView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalRankView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,7 +61,7 @@
 				7F2275062CC12A5400F00A0D /* PlayerInfoView.swift */,
 				7F5A9DE42CC24FA2009EC03D /* PointPlusTimeView.swift */,
 				7F5A9DE62CC42382009EC03D /* PopoverTestView.swift */,
-				7F5A9DE82CC44D7B009EC03D /*  ColorView.swift */,
+				7F5A9DE82CC44D7B009EC03D /* ColorView.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -103,6 +109,9 @@
 				7F91E09E2CBB81AD0017CD64 /* GameView.swift */,
 				7F19D2ED2CBFE405009745DD /* PooView.swift */,
 				7F19D2EF2CBFF805009745DD /* GameResultView.swift */,
+				7FB54BCC2CC523A40065A852 /* RankingView.swift */,
+				7FB54BD02CC539240065A852 /* TotalRankView.swift */,
+				7FB54BCA2CC515E20065A852 /* RankingViewTest.swift */,
 			);
 			path = Feature;
 			sourceTree = "<group>";
@@ -178,11 +187,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				7F91E0922CBB7E190017CD64 /* ContentView.swift in Sources */,
+				7FB54BCD2CC523A40065A852 /* RankingView.swift in Sources */,
 				7F19D2EE2CBFE405009745DD /* PooView.swift in Sources */,
 				7F5A9DE52CC24FA3009EC03D /* PointPlusTimeView.swift in Sources */,
 				7F2275052CC1238C00F00A0D /* OpenningView.swift in Sources */,
-				7F5A9DE92CC44D7B009EC03D /*  ColorView.swift in Sources */,
+				7F5A9DE92CC44D7B009EC03D /* ColorView.swift in Sources */,
 				7F91E09F2CBB81AD0017CD64 /* GameView.swift in Sources */,
+				7FB54BD12CC539240065A852 /* TotalRankView.swift in Sources */,
+				7FB54BCB2CC515E20065A852 /* RankingViewTest.swift in Sources */,
 				7F2275072CC12A5400F00A0D /* PlayerInfoView.swift in Sources */,
 				7F5A9DE72CC42382009EC03D /* PopoverTestView.swift in Sources */,
 				7F91E0902CBB7E190017CD64 /* BurgerKingAppApp.swift in Sources */,
