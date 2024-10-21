@@ -91,7 +91,7 @@ struct GameView: View {
     @State private var moveToRankView:Bool = false
     @State private var resetDisable:Bool = false
     //通知Toggle
-    @State private var popoverSwitch:Bool = true
+    @State private var popoverSwitch:Bool = false
     var body: some View {
         ZStack {
             backgroundColor
@@ -127,6 +127,7 @@ struct GameView: View {
                             .resizable()
                             .frame(width: 30,height: 30)
                         Text("GAME TIME: ")
+                            .font(.body)
                             .foregroundColor(.white)
                             .fontWeight(.bold)
                         Text("\(Int(gameTimeCount))")
@@ -135,16 +136,15 @@ struct GameView: View {
                     Spacer()
                     HStack {
                         Spacer()
-//                        Button(action: {
-//                            moveToRankView = true
-//                        }, label: {
-//                            if !resetDisable {
-//                                Image(systemName: "gear")
-//                                    .opacity(0.7)
-//                                    .font(.body)
-//                            }
-//                        })
-                        Toggle("Switch", isOn: $popoverSwitch)
+                        Button(action: {
+                            moveToRankView = true
+                        }, label: {
+                            if !resetDisable {
+                                Image(systemName: "gear")
+                                    .opacity(0.7)
+                                    .font(.body)
+                            }
+                        })
                     }
                     .frame(width:50)
                 }
@@ -154,24 +154,35 @@ struct GameView: View {
                 ZStack {
                     //Play画面
                     VStack {
-                        if showScore {
-                            Text("LAST GAME: \(lastScore)")
-                                .foregroundColor(.white)
-                                .fontWeight(.bold)
-                                .opacity(0.5)
-                            HStack {
-                                HStack {
-                                    Image("Burger")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width:30)
-                                    Text("X \(Int(score))")
-                                }
-                                .foregroundColor(scoreColor ? Color.red : Color.white)
-                                .fontWeight(.bold)
-                                .opacity(0.9)
+                        HStack(spacing:0) {
+                            Spacer()
+                            if showScore {
+                                Text("LAST GAME: \(lastScore)")
+                                    .foregroundColor(.white)
+                                    .fontWeight(.bold)
+                                    .opacity(0.5)
+                                
                             }
-                            .frame(width:UIScreen.main.bounds.width/2)
+                            VStack(spacing:0) {
+//                                Text(popoverSwitch ? "ON" : "OFF")
+//                                    .foregroundColor(.red)
+                                Toggle("", isOn: $popoverSwitch)
+                                    .labelsHidden()
+                                    .padding(5)
+                            }
+                            .frame(width:80)
+                        }
+                        if showScore {
+                            HStack {
+                                Image("Burger")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width:30)
+                                Text("X \(Int(score))")
+                            }
+                            .foregroundColor(scoreColor ? Color.red : Color.white)
+                            .fontWeight(.bold)
+                            .opacity(0.9)
                         }
                         VStack {
                             if bonusTimeTxt {
@@ -525,6 +536,10 @@ struct GameView: View {
         resultChanged = true
         lastScoreCalculate()
         score = 0
+        countdata.getBurgerCount = 0
+        countdata.getGoldBurgerCount = 0
+        countdata.totalGameTime = 30
+        countdata.bonusTime = 0
         gameTimeCount = 30
         playerPositionY = UIScreen.main.bounds.height-200
         playerPositionX.width = UIScreen.main.bounds.width/2 - 30
