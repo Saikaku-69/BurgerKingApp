@@ -53,7 +53,7 @@ struct GameResultView: View {
                             .foregroundColor(.white)
                     }
                     .padding(5)
-                    .background(Color.resultTxtColor)
+                    .background(Color.warmColor)
                     .cornerRadius(15)
                 }
             }
@@ -65,9 +65,9 @@ struct GameResultView: View {
     }
 }
 extension Color {
-    static var resultTxtColor:Color {
+    static var warmColor:Color {
         return Color(
-            hue: Double.random(in: 0...1),
+            hue: Double.random(in: 0...0.15),
             saturation: Double.random(in: 0.5...1),
             brightness: Double.random(in: 0.5...1)
         )
