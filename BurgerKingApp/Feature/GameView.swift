@@ -139,11 +139,9 @@ struct GameView: View {
                         Button(action: {
                             showMusicSheet = true
                         }, label: {
-                            if !resetDisable {
-                                Image(systemName: "gear")
-                                    .opacity(0.7)
-                                    .font(.body)
-                            }
+                            Image(systemName: "gear")
+                                .opacity(0.7)
+                                .font(.body)
                         })
                     }
                     .frame(width:50)
@@ -164,8 +162,6 @@ struct GameView: View {
                                 
                             }
                             VStack(spacing:0) {
-//                                Text(popoverSwitch ? "ON" : "OFF")
-//                                    .foregroundColor(.red)
                                 Toggle("", isOn: $popoverSwitch)
                                     .labelsHidden()
                                     .padding(5)
