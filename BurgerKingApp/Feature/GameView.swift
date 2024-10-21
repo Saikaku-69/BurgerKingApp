@@ -88,7 +88,7 @@ struct GameView: View {
     @State private var scoreColor:Bool = false
     @State private var resultChanged:Bool = true
     @State private var moveToPlayInfoView:Bool = false
-    @State private var moveToRankView:Bool = false
+    @State private var showMusicSheet:Bool = false
     @State private var resetDisable:Bool = false
     //通知Toggle
     @State private var popoverSwitch:Bool = false
@@ -137,13 +137,11 @@ struct GameView: View {
                     HStack {
                         Spacer()
                         Button(action: {
-                            moveToRankView = true
+                            showMusicSheet = true
                         }, label: {
-                            if !resetDisable {
-                                Image(systemName: "gear")
-                                    .opacity(0.7)
-                                    .font(.body)
-                            }
+                            Image(systemName: "gear")
+                                .opacity(0.7)
+                                .font(.body)
                         })
                     }
                     .frame(width:50)
@@ -164,8 +162,6 @@ struct GameView: View {
                                 
                             }
                             VStack(spacing:0) {
-//                                Text(popoverSwitch ? "ON" : "OFF")
-//                                    .foregroundColor(.red)
                                 Toggle("", isOn: $popoverSwitch)
                                     .labelsHidden()
                                     .padding(5)
@@ -383,8 +379,9 @@ struct GameView: View {
         .fullScreenCover(isPresented: $moveToPlayInfoView) {
             PlayerInfoView()
         }
-        .fullScreenCover(isPresented: $moveToRankView) {
-            TotalRankView()
+        .sheet(isPresented: $showMusicSheet) {
+            MusicView()
+                .presentationDetents([.medium])
         }
         .onAppear() {
             playerPositionX.width = UIScreen.main.bounds.width/2 - 30
