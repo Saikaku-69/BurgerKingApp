@@ -40,17 +40,19 @@ struct RankingView:View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 30)
-                        Text("\(nameArray[index])さん")
+                        Text("\(nameArray[index])")
+                            .font(.caption)
                         Spacer()
                         HStack {
                             Image("Burger")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(width: 20)
+                                .frame(width: 15)
                             Spacer()
                             Text("\(rankArray[index])個")
+                                .font(.body)
                         }
-                        .frame(width:80)
+                        .frame(width:90)
                     }
                     .padding(5)
                     .background(Color.resultTxtColor)
@@ -100,29 +102,6 @@ struct RankingView:View {
         nameArray = nameArrayData.split(separator: ",").map { String($0) } // 转换为 String 数组
         rankArray = rankArrayData.split(separator: ",").compactMap { Int($0) } // 转换为 Int 数组
     }
-//    private func loadStoredData() {
-//        DispatchQueue.global(qos: .background).async {
-//            // 从存储的字符串中加载数据
-//            let loadedNames = nameArrayData.split(separator: ",").map { String($0) }
-//            let loadedRanks = rankArrayData.split(separator: ",").compactMap { Int($0) }
-//            
-//            DispatchQueue.main.async {
-//                nameArray = loadedNames // 主线程更新 UI
-//                rankArray = loadedRanks
-//            }
-//        }
-//    }
-//    private func saveStoredData() {
-//        DispatchQueue.global(qos: .background).async {
-//            let namesString = nameArray.joined(separator: ",")
-//            let ranksString = rankArray.map { String($0) }.joined(separator: ",")
-//            
-//            DispatchQueue.main.async {
-//                nameArrayData = namesString // 主线程更新存储
-//                rankArrayData = ranksString
-//            }
-//        }
-//    }
 }
 #Preview {
     RankingView()
