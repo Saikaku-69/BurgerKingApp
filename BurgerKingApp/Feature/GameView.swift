@@ -88,7 +88,7 @@ struct GameView: View {
     @State private var scoreColor:Bool = false
     @State private var resultChanged:Bool = true
     @State private var moveToPlayInfoView:Bool = false
-    @State private var moveToRankView:Bool = false
+    @State private var showMusicSheet:Bool = false
     @State private var resetDisable:Bool = false
     //通知Toggle
     @State private var popoverSwitch:Bool = false
@@ -137,7 +137,7 @@ struct GameView: View {
                     HStack {
                         Spacer()
                         Button(action: {
-                            moveToRankView = true
+                            showMusicSheet = true
                         }, label: {
                             if !resetDisable {
                                 Image(systemName: "gear")
@@ -383,8 +383,9 @@ struct GameView: View {
         .fullScreenCover(isPresented: $moveToPlayInfoView) {
             PlayerInfoView()
         }
-        .fullScreenCover(isPresented: $moveToRankView) {
-            TotalRankView()
+        .sheet(isPresented: $showMusicSheet) {
+            MusicView()
+                .presentationDetents([.medium])
         }
         .onAppear() {
             playerPositionX.width = UIScreen.main.bounds.width/2 - 30
