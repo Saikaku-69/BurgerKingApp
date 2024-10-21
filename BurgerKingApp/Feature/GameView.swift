@@ -76,7 +76,7 @@ struct GameView: View {
     @State private var stopOfCountTime: Double = 0
     @State private var stopOfCountTimer: Timer?
     //落ちるスピード&生成スピード
-    @State private var fallingSpeed:Double = 0.005
+    @State private var fallingSpeed:Double = 0.004
     @State private var createSpeed:Double = 0.4
     //ペナルティ階段
     @State private var hStackCount:CGFloat = 0
@@ -491,16 +491,16 @@ struct GameView: View {
             GetBurger.removeAll()
             GetPoo.removeAll()
             deadLine = UIScreen.main.bounds.height-200
-            fallingSpeed = 0.005
+            fallingSpeed = 0.004
             grafUpTime = 0
             bonusTimeTxt = false
             scoreColor = false
-            charChange = true
             withAnimation(.linear(duration:1)) {
                 backgroundOpacity += 1.0
                 playerOpacity = 0.0
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                charChange = true
                 hStackCount = 0
                 gameOver = true
                 backgroundOpacity = 0
@@ -629,7 +629,8 @@ struct GameView: View {
     }
     private func speedChange() {
         if fallingSpeed >= 0.002 {
-            fallingSpeed -= 0.003 / 60
+            fallingSpeed -= 0.002 / 60
+            print("speed \(fallingSpeed)")
         } else  {
             fallingSpeed = 0.002
         }
