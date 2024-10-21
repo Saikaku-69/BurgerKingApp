@@ -16,6 +16,7 @@ struct PlayerInfoView: View {
     @State private var logoOffset:CGFloat = -80
     @State private var waitTime:Double = 0.5
     @State private var showBurgers:Bool = false
+    let maxNameLength = 10
     var body: some View {
         ZStack {
             Color.black.edgesIgnoringSafeArea(.all)
@@ -32,6 +33,11 @@ struct PlayerInfoView: View {
                             .background(Color.white.opacity(0.5))
                             .cornerRadius(15)
                             .focused($isFocused)
+                            .onChange(of: playerName) {
+                                if playerName.count > maxNameLength {
+                                    playerName = String(playerName.prefix(maxNameLength))
+                                }
+                            }
                     }
                     .frame(width:UIScreen.main.bounds.width/2)
                 Button(action: {

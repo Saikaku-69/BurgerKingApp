@@ -630,7 +630,6 @@ struct GameView: View {
     private func speedChange() {
         if fallingSpeed >= 0.002 {
             fallingSpeed -= 0.002 / 60
-            print("speed \(fallingSpeed)")
         } else  {
             fallingSpeed = 0.002
         }

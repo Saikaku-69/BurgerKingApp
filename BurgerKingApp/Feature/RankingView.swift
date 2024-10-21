@@ -55,7 +55,7 @@ struct RankingView:View {
                         .frame(width:90)
                     }
                     .padding(5)
-                    .background(Color.resultTxtColor)
+                    .background(Color.coolColor)
                     .cornerRadius(15)
                 }
             }
@@ -101,6 +101,15 @@ struct RankingView:View {
         // 从存储的字符串中加载数据
         nameArray = nameArrayData.split(separator: ",").map { String($0) } // 转换为 String 数组
         rankArray = rankArrayData.split(separator: ",").compactMap { Int($0) } // 转换为 Int 数组
+    }
+}
+extension Color {
+    static var coolColor:Color {
+        return Color(
+            hue: Double.random(in: 0.5...0.75),
+            saturation: Double.random(in: 0.5...1),
+            brightness: Double.random(in: 0.5...1)
+        )
     }
 }
 #Preview {

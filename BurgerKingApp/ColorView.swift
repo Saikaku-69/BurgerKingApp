@@ -16,9 +16,6 @@ extension Color {
 }
 extension Color {
     static var gameBackgroundColor:Color {
-//        return Color (
-//            Color(hue: 0.7, saturation: 0.6, brightness: 0.3)
-//        )
         return Color.black
     }
 }
