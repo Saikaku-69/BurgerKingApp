@@ -92,6 +92,7 @@ struct GameView: View {
     @State private var resetDisable:Bool = false
     //通知Toggle
     @State private var popoverSwitch:Bool = true
+    @State private var showRuleView:Bool = false
     var body: some View {
         ZStack {
             backgroundColor
@@ -333,14 +334,29 @@ struct GameView: View {
             }
             .opacity(backgroundOpacity)
             if gameStartButton {
-                Button(action: {
-                    gameStartButton = false
-                    startGame()
-                    resetDisable = true
-                }) {
-                    Text("ゲーム開始")
-                        .padding()
-                        .border(.blue)
+                VStack {
+                    Button(action: {
+                        gameStartButton = false
+                        startGame()
+                        resetDisable = true
+                    }) {
+                        Text("ゲーム開始")
+                            .padding()
+                            .border(.blue)
+                    }
+                    Button(action: {
+                        showRuleView = true
+                    }) {
+                        Text("ルール紹介")
+                            .padding()
+                            .border(.blue)
+                    }
+                }
+                if showRuleView {
+                    RuleView()
+                        .onTapGesture {
+                            showRuleView = false
+                        }
                 }
             }
             if gameOver {
