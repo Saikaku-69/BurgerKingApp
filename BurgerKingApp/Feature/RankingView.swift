@@ -42,6 +42,7 @@ struct RankingView:View {
                             .frame(width: 30)
                         Text("\(nameArray[index])")
                             .font(.caption)
+                            .foregroundColor(.white)
                         Spacer()
                         HStack {
                             Image("Burger")
