@@ -91,7 +91,7 @@ struct GameView: View {
     @State private var showMusicSheet:Bool = false
     @State private var resetDisable:Bool = false
     //通知Toggle
-    @State private var popoverSwitch:Bool = false
+    @State private var popoverSwitch:Bool = true
     var body: some View {
         ZStack {
             backgroundColor
@@ -141,7 +141,7 @@ struct GameView: View {
                         }, label: {
                             Image(systemName: "gear")
                                 .opacity(0.7)
-                                .font(.body)
+                                .font(.system(size:30))
                         })
                     }
                     .frame(width:50)
@@ -153,7 +153,7 @@ struct GameView: View {
                     //Play画面
                     VStack {
                         HStack(spacing:0) {
-                            Spacer()
+//                            Spacer()
                             if showScore {
                                 Text("LAST GAME: \(lastScore)")
                                     .foregroundColor(.white)
@@ -161,12 +161,12 @@ struct GameView: View {
                                     .opacity(0.5)
                                 
                             }
-                            VStack(spacing:0) {
-                                Toggle("", isOn: $popoverSwitch)
-                                    .labelsHidden()
-                                    .padding(5)
-                            }
-                            .frame(width:80)
+//                            VStack(spacing:0) {
+////                                Toggle("", isOn: $popoverSwitch)
+////                                    .labelsHidden()
+////                                    .padding(5)
+//                            }
+//                            .frame(width:80)
                         }
                         if showScore {
                             HStack {
@@ -453,7 +453,7 @@ struct GameView: View {
                     }
                 } else if itemName.imageName == "Burger" {
                     GetBurger.remove(at: index)
-                    if hStackCount <= 8 {
+                    if hStackCount <= 6 {
                         hStackCount += 1
                         playerPositionY -= Burger.burgerHeight
                         deadLine -= Burger.burgerHeight
