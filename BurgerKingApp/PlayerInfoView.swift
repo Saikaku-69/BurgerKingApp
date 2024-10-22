@@ -24,7 +24,7 @@ struct PlayerInfoView: View {
                     isFocused = false
                 }
             VStack {
-                Section(header: Text("プレーヤーネーム")
+                Section(header: Text("プレイヤー名")
                     .foregroundColor(.white)
                     .fontWeight(.bold)) {
                         if #available(iOS 17.0, *) {
@@ -67,20 +67,20 @@ struct PlayerInfoView: View {
                 .disabled(playerName.isEmpty)
             }
             VStack {
-                Image("bklogotop")
+                Image("KOBtop")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width:logoSize)
                     .padding(.horizontal,30)
                     .background(Color.black)
-                    .offset(y:logoOffset)
-                Image("bklogobottom")
+                    .offset(x:-5,y:logoOffset)
+                Image("KOBbuttom")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width:logoSize)
                     .padding(.horizontal,30)
                     .background(Color.black)
-                    .offset(y:-logoOffset)
+                    .offset(x:5,y:-logoOffset)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

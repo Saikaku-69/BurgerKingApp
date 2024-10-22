@@ -13,10 +13,6 @@ struct Burger:Identifiable {
     var id = UUID()
     var imageName: String
     var burgerPosition: CGPoint
-    //TestPopover
-    var isBurgerPopover: Bool = false
-    var hasTriggered:Bool = false
-    
     static var burgerWidth: CGFloat = 30
     static var burgerHeight: CGFloat = 30
 }
@@ -31,7 +27,6 @@ struct GameView: View {
     @State private var backgroundOpacity:Double = 0.0
     @State private var resultOpacity:Double = 0.0
     @State private var bonusTimeTxt:Bool = false
-    @State private var showScore:Bool = true
     @State private var charChange:Bool = true
     @State private var closePopover:Bool = false
     @State private var checkPopover:Bool = false
@@ -90,8 +85,6 @@ struct GameView: View {
     @State private var moveToPlayInfoView:Bool = false
     @State private var showMusicSheet:Bool = false
     @State private var resetDisable:Bool = false
-    //通知Toggle
-    @State private var popoverSwitch:Bool = true
     @State private var showRuleView:Bool = false
     var body: some View {
         ZStack {
@@ -140,7 +133,7 @@ struct GameView: View {
                         Button(action: {
                             showMusicSheet = true
                         }, label: {
-                            Image(systemName: "gear")
+                            Image(systemName: "music.note.list")
                                 .opacity(0.7)
                                 .font(.system(size:30))
                         })
@@ -154,33 +147,21 @@ struct GameView: View {
                     //Play画面
                     VStack {
                         HStack(spacing:0) {
-//                            Spacer()
-                            if showScore {
-                                Text("LAST GAME: \(lastScore)")
-                                    .foregroundColor(.white)
-                                    .fontWeight(.bold)
-                                    .opacity(0.5)
-                                
-                            }
-//                            VStack(spacing:0) {
-////                                Toggle("", isOn: $popoverSwitch)
-////                                    .labelsHidden()
-////                                    .padding(5)
-//                            }
-//                            .frame(width:80)
+                            Text("LAST GAME SCORE: \(lastScore)")
+                                .foregroundColor(.white)
+                                .fontWeight(.bold)
+                                .opacity(0.5)
                         }
-                        if showScore {
-                            HStack {
-                                Image("Burger")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width:30)
-                                Text("X \(Int(score))")
-                            }
-                            .foregroundColor(scoreColor ? Color.red : Color.white)
-                            .fontWeight(.bold)
-                            .opacity(0.9)
+                        HStack {
+                            Image("Burger")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width:30)
+                            Text("X \(Int(score))")
                         }
+                        .foregroundColor(scoreColor ? Color.red : Color.white)
+                        .fontWeight(.bold)
+                        .opacity(0.9)
                         VStack {
                             if bonusTimeTxt {
                                 PointPlusTimeView(pointUpTimeCount: $grafUpTime)
@@ -233,47 +214,6 @@ struct GameView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width:Burger.burgerWidth)
-                        //TestPopover
-                            .popover(isPresented: Binding(
-                                get: { item.isBurgerPopover },
-                                set: { newValue in
-                                    if let index = GetBurger.firstIndex(where: { $0.id == item.id }) {
-                                        GetBurger[index].isBurgerPopover = newValue
-                                    }
-                                }
-                            )) {
-                                if item.imageName == "Burger" {
-                                    Text("消化量+1")
-                                        .font(.caption2)
-                                        .frame(minWidth: 80, maxHeight: 50)
-                                        .presentationCompactAdaptation(.popover)
-                                } else if item.imageName == "GoldBurger" {
-                                    Text("消化量+20")
-                                        .font(.caption2)
-                                        .frame(minWidth: 80, maxHeight: 50)
-                                        .presentationCompactAdaptation(.popover)
-                                } else if item.imageName == "grafup" {
-                                    Text("5秒間消化量2倍")
-                                        .font(.caption2)
-                                        .frame(minWidth: 80, maxHeight: 50)
-                                        .presentationCompactAdaptation(.popover)
-                                } else if item.imageName == "clock" {
-                                    Text("ゲーム時間5秒増加")
-                                        .font(.caption2)
-                                        .frame(minWidth: 80, maxHeight: 50)
-                                        .presentationCompactAdaptation(.popover)
-                                } else if item.imageName == "hammer" {
-                                    Text("土を1階減らす")
-                                        .font(.caption2)
-                                        .frame(minWidth: 80, maxHeight: 50)
-                                        .presentationCompactAdaptation(.popover)
-                                } else if item.imageName == "vagetable" {
-                                    Text("食べない方が良いかも")
-                                        .font(.caption2)
-                                        .frame(minWidth: 80, maxHeight: 50)
-                                        .presentationCompactAdaptation(.popover)
-                                }
-                            }
                             .position(item.burgerPosition)
                     }
                     ForEach(GetPoo) { poo in
@@ -451,21 +391,6 @@ struct GameView: View {
                 if GetBurger[index].burgerPosition.y <= deadLine {
                     withAnimation(.linear) {
                         GetBurger[index].burgerPosition.y += 1
-                        //TestPopover Burger
-                        if !popoverSwitch {
-                            if !GetBurger[index].hasTriggered && !checkPopover {
-                                GetBurger[index].hasTriggered = true
-                                checkPopover = true
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                    stopAllTimer()
-                                    stopOfTime = gameTimeCount
-                                    closePopover = true
-                                    if let index = GetBurger.firstIndex(where: { $0.id == itemName.id }) {
-                                        GetBurger[index].isBurgerPopover = true
-                                    }
-                                }
-                            }
-                        }
                     }
                 } else if itemName.imageName == "Burger" {
                     GetBurger.remove(at: index)
@@ -484,7 +409,7 @@ struct GameView: View {
         }
     }
     private func checkCharChange() {
-        if score >= 200 {
+        if score >= 100 {
             charChange = false
         } else {
             charChange = true
