@@ -27,17 +27,27 @@ struct PlayerInfoView: View {
                 Section(header: Text("プレーヤーネーム")
                     .foregroundColor(.white)
                     .fontWeight(.bold)) {
-                        TextField("名前", text: $playerName)
-                            .accentColor(.white)
-                            .padding()
-                            .background(Color.white.opacity(0.5))
-                            .cornerRadius(15)
-                            .focused($isFocused)
-                            .onChange(of: playerName) {
-                                if playerName.count > maxNameLength {
-                                    playerName = String(playerName.prefix(maxNameLength))
+                        if #available(iOS 17.0, *) {
+                            TextField("名前", text: $playerName)
+                                .accentColor(.white)
+                                .padding()
+                                .background(Color.white.opacity(0.5))
+                                .cornerRadius(15)
+                                .focused($isFocused)
+                                .onChange(of: playerName) {
+                                    if playerName.count > maxNameLength {
+                                        playerName = String(playerName.prefix(maxNameLength))
+                                    }
                                 }
-                            }
+                        } else {
+                            // Fallback on earlier versions
+                            TextField("名前", text: $playerName)
+                                .accentColor(.white)
+                                .padding()
+                                .background(Color.white.opacity(0.5))
+                                .cornerRadius(15)
+                                .focused($isFocused)
+                        }
                     }
                     .frame(width:UIScreen.main.bounds.width/2)
                 Button(action: {

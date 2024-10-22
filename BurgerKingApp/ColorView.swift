@@ -9,9 +9,14 @@ import SwiftUI
 
 extension Color {
     static var backgroundColor:Color {
-        return Color (
-            Color(hue: 0.7, saturation: 0.5, brightness: 0.7)
-        )
+        if #available(iOS 17.0, *) {
+            return Color (
+                Color(hue: 0.7, saturation: 0.5, brightness: 0.7)
+            )
+        } else {
+            // Fallback on earlier versions
+            return Color.black
+        }
     }
 }
 extension Color {
