@@ -66,6 +66,7 @@ struct GameView: View {
     @State private var createBurgerTimer: Timer?
     @State private var pooTimer: Timer?
     @State private var pointUpTimer: Timer?
+    @State private var randomColorTimer: Timer?
     //時間止まった時の計算用タイマー
     @State private var stopOfTime: Double = 0
     @State private var stopOfCountTime: Double = 0
@@ -126,6 +127,7 @@ struct GameView: View {
                             .fontWeight(.bold)
                         Text("\(Int(gameTimeCount))")
                             .font(.system(size: 30))
+                            .foregroundColor(getTimeColor(value:gameTimeCount))
                     }
                     Spacer()
                     HStack {
@@ -596,6 +598,13 @@ struct GameView: View {
     private func getTimeAnimation() {
         withAnimation(.linear(duration: 0.5)) {
             gameTimeCount += getTime
+        }
+    }
+    private func getTimeColor(value: Double) -> Color {
+        if value > 5 {
+            return Color.white
+        } else {
+            return Color.red
         }
     }
 }
