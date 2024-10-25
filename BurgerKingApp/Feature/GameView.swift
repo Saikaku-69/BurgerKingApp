@@ -39,11 +39,11 @@ struct GameView: View {
     @State private var getScore:Int = 1
     @State private var getTime:Double = 3
     //確率
-    @State private var grafUpProbability:Int = 4
-    @State private var goldBurgerProbability:Int = 5
-    @State private var clockProbability:Int = 3
-    @State private var vagetableProbability:Int = 5
-    @State private var hammerProbability:Int = 3
+    @State private var grafUpProbability:Int = 10
+    @State private var goldBurgerProbability:Int = 15
+    @State private var clockProbability:Int = 15
+    @State private var vagetableProbability:Int = 15
+    @State private var hammerProbability:Int = 5
     //プレイ画面
     @State private var gameScreenWidth:CGFloat = UIScreen.main.bounds.width-50
     @State private var gameScreenHeight:CGFloat = UIScreen.main.bounds.height-200
@@ -73,6 +73,7 @@ struct GameView: View {
     @State private var stopOfCountTimer: Timer?
     //落ちるスピード&生成スピード
     @State private var fallingSpeed:Double = 0.004
+    @State private var penaltySpeed:Double = 0.001
     @State private var createSpeed:Double = 0.5
     //ペナルティ階段
     @State private var hStackCount:CGFloat = 0
@@ -499,8 +500,13 @@ struct GameView: View {
                 } else if itemName.imageName == "clock" {
                     generateImpactFeedback(for: .heavy)
                     GetBurger.remove(at: index)
-                    getTimeAnimation()
-                    countdata.totalGameTime += 3
+                    let randomNum = Int.random(in: 1...100)
+                    if randomNum < 50 {
+                        getTimeAnimation()
+                        countdata.totalGameTime += 3
+                    } else {
+                        fallingSpeed = penaltySpeed
+                    }
                 } else if itemName.imageName == "GoldBurger" {
                     generateImpactFeedback(for: .heavy)
                     GetBurger.remove(at: index)
@@ -559,10 +565,14 @@ struct GameView: View {
         }
     }
     private func speedChange() {
-        if fallingSpeed >= 0.002 {
-            fallingSpeed -= 0.002 / 45
-            createSpeed -= 0.2 / 60
-        } else  {
+        if fallingSpeed == penaltySpeed {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                fallingSpeed = 0.003
+            }
+        } else if fallingSpeed >= 0.002 && fallingSpeed != penaltySpeed {
+            fallingSpeed -= 0.002 / 30
+            createSpeed -= 0.2 / 30
+        } else {
             fallingSpeed = 0.002
             createSpeed = 0.2
         }
