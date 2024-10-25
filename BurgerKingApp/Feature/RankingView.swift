@@ -103,6 +103,11 @@ struct RankingView:View {
         nameArray = nameArrayData.split(separator: ",").map { String($0) } // 转换为 String 数组
         rankArray = rankArrayData.split(separator: ",").compactMap { Int($0) } // 转换为 Int 数组
     }
+    private func resetScore() {
+        nameArray = [] // 清空名字数组
+        rankArray = [] // 清空分数数组
+        saveStoredData() // 更新存储的数据
+    }
 }
 extension Color {
     static var coolColor:Color {
