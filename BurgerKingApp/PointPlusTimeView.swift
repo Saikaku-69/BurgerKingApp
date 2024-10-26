@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct PointPlusTimeView: View {
+    
     @Binding var pointUpTimeCount: Double
     @State private var pointUpTimer: Timer?
+    
     var body: some View {
+        
         HStack {
             Text("消化量増加中")
                 .opacity(0.5)
@@ -22,6 +25,7 @@ struct PointPlusTimeView: View {
         }
         .font(.system(size:15))
         .foregroundColor(.white)
+        
     }
 }
 

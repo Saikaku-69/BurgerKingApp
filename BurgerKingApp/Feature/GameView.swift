@@ -38,12 +38,13 @@ struct GameView: View {
     @State private var gameTimeCount: Double = 30
     @State private var getScore:Int = 1
     @State private var getTime:Double = 3
-    //確率
-    @State private var grafUpProbability:Int = 10
-    @State private var goldBurgerProbability:Int = 15
-    @State private var clockProbability:Int = 15
-    @State private var vagetableProbability:Int = 15
-    @State private var hammerProbability:Int = 5
+    //確率 6:4, 40 / item(5) = 8;
+    @State private var grafUpProbability:Int = 4
+    @State private var goldBurgerProbability:Int = 10
+    @State private var clockProbability:Int = 4
+    @State private var vagetableProbability:Int = 8
+    @State private var hammerProbability:Int = 8
+    @State private var misteryProbability:Int = 4
     //プレイ画面
     @State private var gameScreenWidth:CGFloat = UIScreen.main.bounds.width-50
     @State private var gameScreenHeight:CGFloat = UIScreen.main.bounds.height-200
@@ -74,7 +75,7 @@ struct GameView: View {
     //落ちるスピード&生成スピード
     @State private var fallingSpeed:Double = 0.004
     @State private var penaltySpeed:Double = 0.001
-    @State private var createSpeed:Double = 0.5
+    @State private var createSpeed:Double = 0.3
     //ペナルティ階段
     @State private var hStackCount:CGFloat = 0
     @State private var showPoo: Bool = false
@@ -88,6 +89,7 @@ struct GameView: View {
     @State private var showMusicSheet:Bool = false
     @State private var resetDisable:Bool = false
     @State private var showRuleView:Bool = false
+    
     var body: some View {
         ZStack {
             backgroundColor
@@ -99,6 +101,7 @@ struct GameView: View {
                         brightness: Double.random(in: 0.5...1)
                     )
                 }
+            
             VStack {
                 HStack {
                     HStack {
@@ -146,9 +149,9 @@ struct GameView: View {
                 .foregroundColor(.white)
                 .fontWeight(.bold)
                 .frame(width: gameScreenWidth,height: 30)
+                
                 ZStack {
-                    //Play画面
-                    VStack {
+                    VStack { //GameScreen
                         HStack(spacing:0) {
                             Text("LAST GAME SCORE: \(lastScore)")
                                 .foregroundColor(.white)
@@ -172,7 +175,7 @@ struct GameView: View {
                             }
                         }.frame(height:30)
                         Spacer()
-                        //Play画面の高さ
+                        //土台の高さ
                         VStack(spacing:0) {
                             ForEach(0..<Int(hStackCount),id: \.self) { _ in
                                 HStack(spacing:0) {
@@ -189,6 +192,7 @@ struct GameView: View {
                         .frame(width:gameScreenWidth)
                     }
                     .frame(width: gameScreenWidth,height:gameScreenHeight)
+                    
                     //PlayerImage
                     if charChange {
                         Image("ManDefault")
@@ -216,9 +220,9 @@ struct GameView: View {
                         Image(item.imageName)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width:Burger.burgerWidth)
+                            .frame(width:item.imageName == "GoldBurger" ? 45 : Burger.burgerWidth)
                             .position(item.burgerPosition)
-                            .shadow(color: item.imageName == "GoldBurger" ? .yellow : .clear, radius: 15)
+                            .shadow(color: item.imageName == "GoldBurger" ? .yellow : .clear, radius: 5)
                     }
                     ForEach(GetPoo) { poo in
                         Image("poo")
@@ -254,7 +258,9 @@ struct GameView: View {
                         .disabled(playerDisable)
                 }
                 .frame(width: gameScreenWidth,height: 50)
+                
             }
+            
             ZStack {
                 Rectangle()
                     .fill(.black)
@@ -264,6 +270,7 @@ struct GameView: View {
                     .foregroundColor(.white)
             }
             .opacity(backgroundOpacity)
+            
             if gameStartButton {
                 VStack {
                     Button(action: {
@@ -290,6 +297,7 @@ struct GameView: View {
                         }
                 }
             }
+            
             if gameOver {
                 ZStack {
                     if resultChanged {
@@ -297,14 +305,11 @@ struct GameView: View {
                     } else {
                         RankingView()
                     }
-                    Button(action: {
-                        resultChanged.toggle()
-                    }) {
-                        Rectangle()
-                            .fill(.clear)
-                            .frame(width:250,height:180)
-                    }
                 }
+                .onTapGesture {
+                    resultChanged.toggle()
+                }
+                
                 Button(action: {
                     initialGame()
                     resetDisable = false
@@ -337,7 +342,6 @@ struct GameView: View {
             stopAllTimer()
         }
     }
-    //Burger構造体
     private func createBurger() {
         let randomNumber = Int.random(in: 1...100)
         let randomImage: String
@@ -351,6 +355,8 @@ struct GameView: View {
             randomImage = "vagetable"
         } else if randomNumber <= grafUpProbability + goldBurgerProbability + clockProbability + vagetableProbability + hammerProbability {
             randomImage = "hammer"
+        } else if randomNumber <= grafUpProbability + goldBurgerProbability + clockProbability + vagetableProbability + hammerProbability + misteryProbability {
+            randomImage = "hatena"
         } else {
             randomImage = "Burger"
         }
@@ -424,6 +430,7 @@ struct GameView: View {
             GetPoo.removeAll()
             deadLine = UIScreen.main.bounds.height-200
             fallingSpeed = 0.004
+            createSpeed = 0.5
             grafUpTime = 0
             bonusTimeTxt = false
             scoreColor = false
@@ -444,20 +451,6 @@ struct GameView: View {
             }
         }
     }
-    private func stopAllTimer() {
-        countTimer?.invalidate()
-        createBurgerTimer?.invalidate()
-        fallingTimer?.invalidate()
-        pooTimer?.invalidate()
-        pointUpTimer?.invalidate()
-    }
-    private func startAllTimer() {
-        countGameTime()
-        startGame()
-        falling()
-        pooAction()
-        countStart()
-    }
     private func initialGame() {
         gameOver = false
         gameStartButton = true
@@ -475,7 +468,20 @@ struct GameView: View {
         playerOpacity = 1.0
         resultOpacity = 0
     }
-    //判定
+    private func stopAllTimer() {
+        countTimer?.invalidate()
+        createBurgerTimer?.invalidate()
+        fallingTimer?.invalidate()
+        pooTimer?.invalidate()
+        pointUpTimer?.invalidate()
+    }
+    private func startAllTimer() {
+        countGameTime()
+        startGame()
+        falling()
+        pooAction()
+        countStart()
+    }
     private func collision() {
         let newMainPosition = CGPoint(x:playerPositionX.width + dragPositionX.width,y:playerPositionY - 50)
         let newMainFrame = CGRect(x:newMainPosition.x - mainObWidth/1.5,y:newMainPosition.y,
@@ -489,7 +495,7 @@ struct GameView: View {
             if newMainFrame.intersects(newBurgerRect) {
                 let itemName = GetBurger[index]
                 if itemName.imageName == "Burger" {
-                    generateImpactFeedback(for: .medium)
+                    generateImpactFeedback(for: .heavy)
                     GetBurger.remove(at: index)
                     withAnimation(.linear(duration:0.2)) {
                         score += getScore
@@ -500,14 +506,20 @@ struct GameView: View {
                 } else if itemName.imageName == "clock" {
                     generateImpactFeedback(for: .heavy)
                     GetBurger.remove(at: index)
+                    getTimeAnimation()
+                    countdata.totalGameTime += 3
+                } else if itemName.imageName == "hatena" {
                     let randomNum = Int.random(in: 1...100)
+                    GetBurger.remove(at: index)
                     if randomNum < 50 {
-                        getTimeAnimation()
-                        countdata.totalGameTime += 3
+                        generateImpactFeedback(for: .heavy)
+                        score += 50
                     } else {
+                        generateErrorFeedback()
                         fallingSpeed = penaltySpeed
+                        clockProbability = 0
                     }
-                } else if itemName.imageName == "GoldBurger" {
+                }else if itemName.imageName == "GoldBurger" {
                     generateImpactFeedback(for: .heavy)
                     GetBurger.remove(at: index)
                     withAnimation(.linear(duration:0.2)) {
@@ -520,14 +532,14 @@ struct GameView: View {
                     grafTimeOpacity = 1.0
                     scoreColor = true
                     bonusTimeTxt = true
-                    grafUpTime += 3
+                    grafUpTime += 5
                     countStart()
                     countdata.bonusTime += 3
                 } else if itemName.imageName == "vagetable" {
                     generateErrorFeedback()
                     GetBurger.remove(at: index)
                     showPoo = true
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                         showPoo = false
                     }
                 } else if itemName.imageName == "hammer" {
@@ -544,13 +556,11 @@ struct GameView: View {
             }
         }
     }
-    //振動処理
     func generateImpactFeedback(for style: UIImpactFeedbackGenerator.FeedbackStyle) {
         let feedbackGenerator = UIImpactFeedbackGenerator(style: style)
         feedbackGenerator.prepare()
         feedbackGenerator.impactOccurred()
     }
-    //振動処理
     func generateErrorFeedback() {
         let feedbackGenerator = UINotificationFeedbackGenerator()
         feedbackGenerator.prepare()
@@ -565,16 +575,18 @@ struct GameView: View {
         }
     }
     private func speedChange() {
+        //defaultSpeed: fallingSpeed:0.004,createSpeed: 0.003
         if fallingSpeed == penaltySpeed {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 fallingSpeed = 0.003
+                clockProbability = 8
             }
         } else if fallingSpeed >= 0.002 && fallingSpeed != penaltySpeed {
-            fallingSpeed -= 0.002 / 30
-            createSpeed -= 0.2 / 30
+            fallingSpeed -= 0.002 / 45
+            createSpeed -= 0.2 / 45
         } else {
             fallingSpeed = 0.002
-            createSpeed = 0.2
+            createSpeed = 0.1
         }
     }
     private func lastScoreCalculate() {
