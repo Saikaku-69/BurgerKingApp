@@ -73,7 +73,7 @@ struct RankingView:View {
             .cornerRadius(20)
             .onAppear() {
                 loadStoredData() // 加载存储的数据
-                updateScores(playerName: playerRank.name, newScore: playerRank.score) // 更新分数
+                updateScores(playerName: playerRank.name, newScore: playerRank.score)
             }
         }
     }

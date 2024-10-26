@@ -39,12 +39,12 @@ struct GameView: View {
     @State private var getScore:Int = 1
     @State private var getTime:Double = 3
     //確率 6:4, 40 / item(5) = 8;
-    @State private var grafUpProbability:Int = 4
-    @State private var goldBurgerProbability:Int = 10
-    @State private var clockProbability:Int = 3
+    @State private var grafUpProbability:Int = 5
+    @State private var goldBurgerProbability:Int = 8
+    @State private var clockProbability:Int = 6
     @State private var vagetableProbability:Int = 6
-    @State private var hammerProbability:Int = 8
-    @State private var misteryProbability:Int = 3
+    @State private var hammerProbability:Int = 5
+    @State private var misteryProbability:Int = 6
     //プレイ画面
     @State private var gameScreenWidth:CGFloat = UIScreen.main.bounds.width-50
     @State private var gameScreenHeight:CGFloat = UIScreen.main.bounds.height-200
@@ -511,20 +511,18 @@ struct GameView: View {
                 } else if itemName.imageName == "hatena" {
                     let randomNum = Int.random(in: 1...100)
                     GetBurger.remove(at: index)
-                    if randomNum < 50 {
+                    if randomNum < 67 {
                         generateImpactFeedback(for: .heavy)
-                        score += 30
+                        score += 20
                     } else {
-                        print (penaltySpeed)
                         generateErrorFeedback()
                         fallingSpeed = penaltySpeed
-                        clockProbability = 0
                     }
                 }else if itemName.imageName == "GoldBurger" {
                     generateImpactFeedback(for: .light)
                     GetBurger.remove(at: index)
                     withAnimation(.linear(duration:0.2)) {
-                        score += 20
+                        score += 10
                     }
                     countdata.getGoldBurgerCount += 1
                 } else if itemName.imageName == "grafup" {
@@ -578,15 +576,11 @@ struct GameView: View {
     private func speedChange() {
         if fallingSpeed == penaltySpeed {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                fallingSpeed = 0.003
-                clockProbability = 8
+                fallingSpeed = 0.0035
             }
-        } else if fallingSpeed >= 0.002 && fallingSpeed != penaltySpeed {
-            fallingSpeed -= 0.002 / 45
-            createSpeed -= 0.2 / 45
-        } else {
-            fallingSpeed = 0.002
-            createSpeed = 0.1
+        } else if fallingSpeed >= 0.002 {
+            fallingSpeed -= 0.002 / 60
+            createSpeed -= 0.002 / 60
         }
     }
     private func lastScoreCalculate() {
