@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+
 class countData:ObservableObject {
     static let shared = countData()
     @Published var getBurgerCount:Int = 0
@@ -13,21 +14,26 @@ class countData:ObservableObject {
     @Published var getGoldBurgerCount:Int = 0
     @Published var bonusTime:Double = 0
 }
+
 struct countStr:Identifiable {
     let id = UUID()
     var imgName: String
     var Txt: String
     var data: String
 }
+
 struct GameResultView: View {
     @ObservedObject var countdata = countData.shared
     
     var body: some View {
-        let countstr = [countStr(imgName:"Burger", Txt:"消化したバーガー:",data:"\(countdata.getBurgerCount)個"),
-                        countStr(imgName: "GoldBurger", Txt:"ゴールドバーガー:",data:"\(countdata.getGoldBurgerCount)個"),
-                        countStr(imgName: "grafup", Txt:"消化量増加持続時間:",data:"\(Int(countdata.bonusTime))秒"),
-                        countStr(imgName: "clock", Txt:"トータルゲーム時間:",data:"\(Int(countdata.totalGameTime))秒")
+        
+        let countstr = [
+            countStr(imgName:"Burger", Txt:"消化したバーガー:",data:"\(countdata.getBurgerCount)個"),
+            countStr(imgName: "GoldBurger",Txt:"ゴールドバーガー:",data:"\(countdata.getGoldBurgerCount)個"),
+            countStr(imgName: "grafup", Txt:"消化量増加持続時間:",data:"\(Int(countdata.bonusTime))秒"),
+            countStr(imgName: "clock", Txt:"トータルゲーム時間:",data:"\(Int(countdata.totalGameTime))秒")
         ]
+        
         ZStack {
             Image("bklogotop")
                 .resizable()
@@ -48,13 +54,19 @@ struct GameResultView: View {
                             .frame(width:30)
                         Text(item.Txt)
                             .font(.caption)
+                            .foregroundColor(.white)
                         Spacer()
                         Text(item.data)
                             .foregroundColor(.white)
                     }
                     .padding(5)
-                    .background(Color.warmColor)
+                    .padding(.horizontal,5)
+                    .background(Color.black)
                     .cornerRadius(15)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 15)
+                            .stroke(Color.white, lineWidth: 1)
+                    )
                 }
             }
             .frame(width: UIScreen.main.bounds.width/1.4)
@@ -64,15 +76,7 @@ struct GameResultView: View {
         }
     }
 }
-extension Color {
-    static var warmColor:Color {
-        return Color(
-            hue: Double.random(in: 0...0.15),
-            saturation: Double.random(in: 0.5...1),
-            brightness: Double.random(in: 0.5...1)
-        )
-    }
-}
+
 #Preview {
     GameResultView()
 }

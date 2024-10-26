@@ -8,12 +8,16 @@
 import SwiftUI
 
 struct OpenningView: View {
+    //Openning effects Test
     @State private var createBurgers: [Bool] = Array(repeating: false, count: 5)
     @State private var positions: [CGPoint] = Array(repeating: .zero, count: 5)
     @State private var sizes: [CGFloat] = Array(repeating: .zero, count: 5)
     @State private var MoveToGameView = false
+    
     var body: some View {
+        
         ZStack {
+            
             ForEach(0..<createBurgers.count,id: \.self) { index in
                 if createBurgers[index] {
                     Image("Burger")
@@ -23,13 +27,14 @@ struct OpenningView: View {
                         .position(positions[index])
                 }
             }
+            
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear() {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 showBurgers()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                    MoveToGameView = true
+                    MoveToGameView = false
                 }
             }
         }
@@ -37,6 +42,7 @@ struct OpenningView: View {
             GameView()
         }
     }
+    
     private func showBurgers() {
         for index in 0..<createBurgers.count {
             let delay = Double(index) * 0.3
@@ -47,10 +53,12 @@ struct OpenningView: View {
             }
         }
     }
+    
     private func randomSize() -> CGFloat{
         let randomSize = CGFloat.random(in: 200...500)
         return randomSize
     }
+    
     private func randomPosition() -> CGPoint{
         let minX = UIScreen.main.bounds.width/4
         let minY = UIScreen.main.bounds.height/6
@@ -59,6 +67,7 @@ struct OpenningView: View {
         
         return CGPoint(x: randomX, y: randomY)
     }
+    
 }
 
 #Preview {
