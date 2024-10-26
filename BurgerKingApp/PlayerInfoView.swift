@@ -8,25 +8,32 @@
 import SwiftUI
 
 struct PlayerInfoView: View {
+    
+    //ネームをクラスに保存
     @ObservedObject var playerRank = PlayerRank.data
     @State private var playerName: String = ""
-    @State private var MoveToPlay: Bool = false
-    @State private var logoSize: CGFloat = 150
+    @State private var moveToPlay: Bool = false
+    @State private var logoSize: CGFloat = 200
     @FocusState private var isFocused: Bool
-    @State private var logoOffset:CGFloat = -80
+    @State private var logoOffset:CGFloat = 70
     @State private var waitTime:Double = 0.5
-    @State private var showBurgers:Bool = false
     let maxNameLength = 10
+    //Test 3DRotation
+    @State private var isFlipped = false
+    
     var body: some View {
+        
         ZStack {
-            Color.black.edgesIgnoringSafeArea(.all)
+            Color.black.ignoresSafeArea()
                 .onTapGesture {
                     isFocused = false
                 }
+            
             VStack {
                 Section(header: Text("プレイヤー名")
                     .foregroundColor(.white)
                     .fontWeight(.bold)) {
+                        //文化祭実機のバージョンがiOS 16のため
                         if #available(iOS 17.0, *) {
                             TextField("名前", text: $playerName)
                                 .accentColor(.white)
@@ -50,15 +57,15 @@ struct PlayerInfoView: View {
                         }
                     }
                     .frame(width:UIScreen.main.bounds.width/2)
+                
                 Button(action: {
                     isFocused = false
                     DispatchQueue.main.asyncAfter(deadline: .now() + waitTime) {
                         logoMove()
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            showBurgers = true
+                            moveToPlay = true
                         }
                     }
-                    //player name 処理
                     playerRank.name = playerName
                 }) {
                     Text("遊びに行く")
@@ -66,6 +73,7 @@ struct PlayerInfoView: View {
                 .padding(.top)
                 .disabled(playerName.isEmpty)
             }
+            
             VStack {
                 Image("KOBtop")
                     .resizable()
@@ -73,29 +81,33 @@ struct PlayerInfoView: View {
                     .frame(width:logoSize)
                     .padding(.horizontal,30)
                     .background(Color.black)
-                    .offset(x:-5,y:logoOffset)
+                    .offset(x:-5,y:-logoOffset)
+                
                 Image("KOBbuttom")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width:logoSize)
-                    .padding(.horizontal,30)
+                    .frame(width: logoSize)
+                    .padding(.horizontal, 30)
                     .background(Color.black)
-                    .offset(x:5,y:-logoOffset)
+                    .offset(x:10,y: logoOffset)
             }
+            
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onDisappear() {
             isFocused = false
         }
-        .fullScreenCover(isPresented:$showBurgers) {
+        .fullScreenCover(isPresented:$moveToPlay) {
             GameView()
         }
     }
+    
     private func logoMove() {
         withAnimation(.linear(duration:waitTime)) {
-            logoOffset += 85
+            logoOffset -= 80
         }
     }
+    
 }
 
 #Preview {

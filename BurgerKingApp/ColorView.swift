@@ -25,8 +25,35 @@ extension Color {
         }
     }
 }
+
 extension Color {
     static var gameBackgroundColor:Color {
         return Color.black
+    }
+}
+
+extension Color {
+    static var deepGray:Color {
+        return Color(red: 0.1, green: 0.1, blue: 0.1)
+    }
+}
+
+extension Color {
+    static var coolColor:Color {
+        return Color(
+            hue: Double.random(in: 0.5...0.75),
+            saturation: Double.random(in: 0.5...1),
+            brightness: Double.random(in: 0.5...1)
+        )
+    }
+}
+
+extension Color {
+    static var warmColor:Color {
+        return Color(
+            hue: Double.random(in: 0...0.15),
+            saturation: Double.random(in: 0.5...1),
+            brightness: Double.random(in: 0.5...1)
+        )
     }
 }

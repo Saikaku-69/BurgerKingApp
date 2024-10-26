@@ -1,10 +1,12 @@
 import SwiftUI
 
 struct PopoverTestView: View {
+    
     @State private var isPopoverPresented = false
     @State private var isPopoverTest = false
     
     var body: some View {
+        
         Button("Show Popover") {
             isPopoverPresented.toggle()
         }
@@ -20,7 +22,6 @@ struct PopoverTestView: View {
         })
         .padding(.bottom,100)
         
-        //
         Circle()
             .frame(width:50)
             .popover(isPresented: $isPopoverTest,
