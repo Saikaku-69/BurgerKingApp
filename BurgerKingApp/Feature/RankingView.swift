@@ -33,6 +33,7 @@ struct RankingView:View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width:200)
                 .offset(y:110)
+            
             VStack(alignment: .leading) {
                 ForEach(0..<min(rankArray.count, 4),id: \.self) { index in
                     HStack {
@@ -52,12 +53,18 @@ struct RankingView:View {
                             Spacer()
                             Text("\(rankArray[index])個")
                                 .font(.body)
+                                .foregroundColor(.white)
                         }
                         .frame(width:90)
                     }
                     .padding(5)
-                    .background(Color.coolColor)
+                    .padding(.horizontal,5)
+                    .background(Color.black)
                     .cornerRadius(15)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 15)
+                            .stroke(Color.white, lineWidth: 1)
+                    )
                 }
             }
             .frame(width: UIScreen.main.bounds.width/1.4)
@@ -103,16 +110,13 @@ struct RankingView:View {
         nameArray = nameArrayData.split(separator: ",").map { String($0) } // 转换为 String 数组
         rankArray = rankArrayData.split(separator: ",").compactMap { Int($0) } // 转换为 Int 数组
     }
-}
-extension Color {
-    static var coolColor:Color {
-        return Color(
-            hue: Double.random(in: 0.5...0.75),
-            saturation: Double.random(in: 0.5...1),
-            brightness: Double.random(in: 0.5...1)
-        )
+    private func resetScore() {
+        nameArray = [] // 清空名字数组
+        rankArray = [] // 清空分数数组
+        saveStoredData() // 更新存储的数据
     }
 }
+
 #Preview {
     RankingView()
 }

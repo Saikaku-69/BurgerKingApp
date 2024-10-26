@@ -12,6 +12,7 @@
 		7F2275052CC1238C00F00A0D /* OpenningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2275042CC1238B00F00A0D /* OpenningView.swift */; };
 		7F2275072CC12A5400F00A0D /* PlayerInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2275062CC12A5400F00A0D /* PlayerInfoView.swift */; };
 		7F2AF5BD2CC799D7002651A8 /* RuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2AF5BC2CC799D7002651A8 /* RuleView.swift */; };
+		7F4AA1C72CCCE9EA00271E87 /* ClockMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4AA1C62CCCE9EA00271E87 /* ClockMessageView.swift */; };
 		7F52E6452CC6131F0078BEAB /* whatever you like.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 7F52E6442CC6131F0078BEAB /* whatever you like.mp3 */; };
 		7F52E6482CC615E40078BEAB /* Funky Cat.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 7F52E6472CC615E40078BEAB /* Funky Cat.mp3 */; };
 		7F5A9DE52CC24FA3009EC03D /* PointPlusTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5A9DE42CC24FA2009EC03D /* PointPlusTimeView.swift */; };
@@ -32,6 +33,7 @@
 		7F2275042CC1238B00F00A0D /* OpenningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenningView.swift; sourceTree = "<group>"; };
 		7F2275062CC12A5400F00A0D /* PlayerInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerInfoView.swift; sourceTree = "<group>"; };
 		7F2AF5BC2CC799D7002651A8 /* RuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleView.swift; sourceTree = "<group>"; };
+		7F4AA1C62CCCE9EA00271E87 /* ClockMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClockMessageView.swift; sourceTree = "<group>"; };
 		7F52E6442CC6131F0078BEAB /* whatever you like.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "whatever you like.mp3"; path = "../../../../BurgerKingBuild/whatever you like.mp3"; sourceTree = "<group>"; };
 		7F52E6462CC613580078BEAB /* whatever you like.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "whatever you like.mp3"; sourceTree = "<group>"; };
 		7F52E6472CC615E40078BEAB /* Funky Cat.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "Funky Cat.mp3"; path = "../../../../BurgerKingBuild/Funky Cat.mp3"; sourceTree = "<group>"; };
@@ -66,9 +68,9 @@
 				7F2275042CC1238B00F00A0D /* OpenningView.swift */,
 				7F2275062CC12A5400F00A0D /* PlayerInfoView.swift */,
 				7F5A9DE42CC24FA2009EC03D /* PointPlusTimeView.swift */,
-				7F5A9DE62CC42382009EC03D /* PopoverTestView.swift */,
 				7F5A9DE82CC44D7B009EC03D /* ColorView.swift */,
 				7F2AF5BC2CC799D7002651A8 /* RuleView.swift */,
+				7F4AA1C62CCCE9EA00271E87 /* ClockMessageView.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -104,6 +106,7 @@
 			children = (
 				7F91E08F2CBB7E190017CD64 /* BurgerKingAppApp.swift */,
 				7F91E0912CBB7E190017CD64 /* ContentView.swift */,
+				7F5A9DE62CC42382009EC03D /* PopoverTestView.swift */,
 				7F3F4A822CC09E51003DA38B /* UI */,
 				7F91E09D2CBB81900017CD64 /* Feature */,
 				7F52E6412CC60F4F0078BEAB /* Music */,
@@ -215,6 +218,7 @@
 				7F5A9DE92CC44D7B009EC03D /* ColorView.swift in Sources */,
 				7F91E09F2CBB81AD0017CD64 /* GameView.swift in Sources */,
 				7FB54BD12CC539240065A852 /* MusicView.swift in Sources */,
+				7F4AA1C72CCCE9EA00271E87 /* ClockMessageView.swift in Sources */,
 				7F2275072CC12A5400F00A0D /* PlayerInfoView.swift in Sources */,
 				7F5A9DE72CC42382009EC03D /* PopoverTestView.swift in Sources */,
 				7F91E0902CBB7E190017CD64 /* BurgerKingAppApp.swift in Sources */,
