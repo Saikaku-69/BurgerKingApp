@@ -515,6 +515,7 @@ struct GameView: View {
                         generateImpactFeedback(for: .heavy)
                         score += 50
                     } else {
+                        print (penaltySpeed)
                         generateErrorFeedback()
                         fallingSpeed = penaltySpeed
                         clockProbability = 0
@@ -575,7 +576,6 @@ struct GameView: View {
         }
     }
     private func speedChange() {
-        //defaultSpeed: fallingSpeed:0.004,createSpeed: 0.003
         if fallingSpeed == penaltySpeed {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 fallingSpeed = 0.003
