@@ -220,7 +220,7 @@ struct GameView: View {
                         Image(item.imageName)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width:item.imageName == "GoldBurger" ? 45 : Burger.burgerWidth)
+                            .frame(width:item.imageName == "GoldBurger" ? 40 : Burger.burgerWidth)
                             .position(item.burgerPosition)
                             .shadow(color: item.imageName == "GoldBurger" ? .yellow : .clear, radius: 5)
                     }
@@ -279,15 +279,26 @@ struct GameView: View {
                         resetDisable = true
                     }) {
                         Text("ゲーム開始")
+                            .font(.system(size: 18))
+                            .foregroundColor(.white)
                             .padding()
-                            .border(.blue)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 15)
+                                    .stroke(Color.white, lineWidth: 1)
+                            )
                     }
+                    
                     Button(action: {
                         showRuleView = true
                     }) {
-                        Text("ルール紹介")
+                        Text("アイテム一覧")
+                            .font(.system(size: 15))
+                            .foregroundColor(.white)
                             .padding()
-                            .border(.blue)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 15)
+                                    .stroke(Color.white, lineWidth: 1)
+                            )
                     }
                 }
                 if showRuleView {
