@@ -49,6 +49,9 @@ class MusicPlayer {
 }
 struct MusicView: View {
     var body: some View {
+        Text("好きなBGMを選択してください！")
+            .fontWeight(.bold)
+            .padding(.bottom,100)
         HStack {
             //bgm1
             Button(action: {
@@ -67,6 +70,7 @@ struct MusicView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width:100)
             }
+            .padding(.trailing,20)
             //bgm2
             Button(action: {
                 MusicPlayer.shared.musicSwitchOne = false

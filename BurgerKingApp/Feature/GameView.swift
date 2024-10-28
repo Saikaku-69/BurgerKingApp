@@ -30,6 +30,9 @@ struct GameView: View {
     @State private var charChange:Bool = true
     @State private var closePopover:Bool = false
     @State private var checkPopover:Bool = false
+    @State private var scoreMessage:Double = 0.0
+    @State private var goldBurgerMSG:Bool = false
+    @State private var goodMessage:Bool = false
     //スコアup中のTimer
     @State private var grafUpTime: Double = 0
     @State private var grafTimeOpacity: Double = 0.0
@@ -39,12 +42,12 @@ struct GameView: View {
     @State private var getScore:Int = 1
     @State private var getTime:Double = 3
     //確率 6:4, 40 / item(5) = 8;
-    @State private var grafUpProbability:Int = 5
-    @State private var goldBurgerProbability:Int = 8
+    @State private var grafUpProbability:Int = 8
+    @State private var goldBurgerProbability:Int = 12
     @State private var clockProbability:Int = 6
-    @State private var vagetableProbability:Int = 6
-    @State private var hammerProbability:Int = 5
-    @State private var misteryProbability:Int = 6
+    @State private var vagetableProbability:Int = 12
+    @State private var hammerProbability:Int = 0
+    @State private var misteryProbability:Int = 10
     //プレイ画面
     @State private var gameScreenWidth:CGFloat = UIScreen.main.bounds.width-50
     @State private var gameScreenHeight:CGFloat = UIScreen.main.bounds.height-200
@@ -73,9 +76,11 @@ struct GameView: View {
     @State private var stopOfCountTime: Double = 0
     @State private var stopOfCountTimer: Timer?
     //落ちるスピード&生成スピード
-    @State private var fallingSpeed:Double = 0.004
-    @State private var penaltySpeed:Double = 0.001
-    @State private var createSpeed:Double = 0.4
+    @State private var fallingSpeed: Double = 0.004
+    @State private var baseSpeed: Double = 0.004
+    @State private var penaltySpeed: Double = 0.001
+    @State private var createSpeed: Double = 0.5
+    @State private var isPenaltyActive = false
     //ペナルティ階段
     @State private var hStackCount:CGFloat = 0
     @State private var showPoo: Bool = false
@@ -165,9 +170,10 @@ struct GameView: View {
                                 .frame(width:30)
                             Text("X \(Int(score))")
                         }
-                        .foregroundColor(scoreColor ? Color.red : Color.white)
+                        .foregroundColor(scoreColor ? Color.white : Color.white)
                         .fontWeight(.bold)
                         .opacity(0.9)
+                        //Item Message
                         VStack {
                             if bonusTimeTxt {
                                 PointPlusTimeView(pointUpTimeCount: $grafUpTime)
@@ -199,16 +205,19 @@ struct GameView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(height:playerFrame)
-                            .position(x:playerPositionX.width + dragPositionX.width + 10,y:playerPositionY - 40)
+                            .position(x:playerPositionX.width + dragPositionX.width + 10,
+                                      y:playerPositionY - 40)
                             .opacity(playerOpacity)
                     } else {
                         Image("ManLight")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(height:playerFrame)
-                            .position(x:playerPositionX.width + dragPositionX.width + 10,y:playerPositionY - 40)
+                            .position(x:playerPositionX.width + dragPositionX.width + 10,
+                                      y:playerPositionY - 40)
                             .opacity(playerOpacity)
                     }
+                    
                     //当たる判定用mainObject
                     Rectangle()
                         .fill(.red)
@@ -220,7 +229,7 @@ struct GameView: View {
                         Image(item.imageName)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width:item.imageName == "GoldBurger" ? 45 : Burger.burgerWidth)
+                            .frame(width:item.imageName == "GoldBurger" ? 40 : Burger.burgerWidth)
                             .position(item.burgerPosition)
                             .shadow(color: item.imageName == "GoldBurger" ? .yellow : .clear, radius: 5)
                     }
@@ -231,6 +240,32 @@ struct GameView: View {
                             .frame(width:Burger.burgerWidth)
                             .position(poo.pooPosition)
                     }
+                    
+                    //スコア増加Message
+                    if goldBurgerMSG {
+                        Text("+10")
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .foregroundColor(.green)
+                            .opacity(scoreMessage)
+                            .offset(x:10)
+                    } else {
+                        if goodMessage {
+                            Text("+20")
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .foregroundColor(.green)
+                                .opacity(scoreMessage)
+                                .offset(x:10)
+                        } else {
+                            Text("注意！")
+                                .font(.title)
+                                .foregroundColor(.red)
+                                .opacity(scoreMessage)
+                                .offset(x:10)
+                        }
+                    }
+                    
                 }
                 .frame(width: gameScreenWidth,height: gameScreenHeight)
                 .background(Color.gameBackgroundColor)
@@ -279,15 +314,26 @@ struct GameView: View {
                         resetDisable = true
                     }) {
                         Text("ゲーム開始")
+                            .font(.system(size: 18))
+                            .foregroundColor(.white)
                             .padding()
-                            .border(.blue)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 15)
+                                    .stroke(Color.white, lineWidth: 1)
+                            )
                     }
+                    
                     Button(action: {
                         showRuleView = true
                     }) {
-                        Text("ルール紹介")
+                        Text("アイテム一覧")
+                            .font(.system(size: 15))
+                            .foregroundColor(.white)
                             .padding()
-                            .border(.blue)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 15)
+                                    .stroke(Color.white, lineWidth: 1)
+                            )
                     }
                 }
                 if showRuleView {
@@ -483,9 +529,12 @@ struct GameView: View {
         countStart()
     }
     private func collision() {
-        let newMainPosition = CGPoint(x:playerPositionX.width + dragPositionX.width,y:playerPositionY - 50)
-        let newMainFrame = CGRect(x:newMainPosition.x - mainObWidth/1.5,y:newMainPosition.y,
-                                  width:mainObWidth,height:mainObHeight)
+        let newMainPosition = CGPoint(x:playerPositionX.width + dragPositionX.width,
+                                      y:playerPositionY - 50)
+        let newMainFrame = CGRect(x:newMainPosition.x - mainObWidth/1.5,
+                                  y:newMainPosition.y,
+                                  width:mainObWidth,
+                                  height:mainObHeight)
         //配列中のBurgerを判定した後削除
         for index in GetBurger.indices.reversed() {
             let newBurgerRect = CGRect(x: GetBurger[index].burgerPosition.x - Burger.burgerWidth / 2,
@@ -504,29 +553,36 @@ struct GameView: View {
                     createPoo()
                     pooAction()
                 } else if itemName.imageName == "clock" {
-                    generateImpactFeedback(for: .light)
+                    generateImpactFeedback(for: .heavy)
                     GetBurger.remove(at: index)
                     getTimeAnimation()
                     countdata.totalGameTime += 3
                 } else if itemName.imageName == "hatena" {
                     let randomNum = Int.random(in: 1...100)
                     GetBurger.remove(at: index)
+                    goldBurgerMSG = false
                     if randomNum < 67 {
+                        goodMessage = true
                         generateImpactFeedback(for: .heavy)
                         score += 20
+                        showScoreMessage()
                     } else {
-                        generateErrorFeedback()
-                        fallingSpeed = penaltySpeed
+                        goodMessage = false
+                        generateImpactFeedback(for: .heavy)
+                        hitHatena()
+                        showScoreMessage()
                     }
                 }else if itemName.imageName == "GoldBurger" {
-                    generateImpactFeedback(for: .light)
+                    generateImpactFeedback(for: .heavy)
                     GetBurger.remove(at: index)
+                    goldBurgerMSG = true
+                    showScoreMessage()
                     withAnimation(.linear(duration:0.2)) {
                         score += 10
                     }
                     countdata.getGoldBurgerCount += 1
                 } else if itemName.imageName == "grafup" {
-                    generateImpactFeedback(for: .light)
+                    generateImpactFeedback(for: .heavy)
                     GetBurger.remove(at: index)
                     grafTimeOpacity = 1.0
                     scoreColor = true
@@ -538,11 +594,11 @@ struct GameView: View {
                     generateErrorFeedback()
                     GetBurger.remove(at: index)
                     showPoo = true
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         showPoo = false
                     }
                 } else if itemName.imageName == "hammer" {
-                    generateImpactFeedback(for: .light)
+                    generateImpactFeedback(for: .heavy)
                     GetBurger.remove(at: index)
                     if hStackCount > 0 {
                         hStackCount -= 1
@@ -571,16 +627,34 @@ struct GameView: View {
         countTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             gameTimeCount -= 1
             speedChange()
+            if hStackCount <= 0 {
+                hammerProbability = 0
+            } else {
+                hammerProbability = 10
+            }
         }
     }
     private func speedChange() {
-        if fallingSpeed == penaltySpeed {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                fallingSpeed = 0.0035
+        guard !isPenaltyActive else { return } // 如果Penalty激活，则不增加速度
+        if fallingSpeed > 0.002 {
+            fallingSpeed -= 0.002 / 90 // 缓慢增加速度
+            createSpeed -= 0.003 / 60 // 让创建速度同步变化
+        }
+    }
+    private func hitHatena() {
+        guard !isPenaltyActive else { return } // 如果已经在Penalty中，避免再次触发
+        
+        // 设置Penalty状态
+        isPenaltyActive = true
+        baseSpeed = fallingSpeed // 保存当前速度以便恢复
+        fallingSpeed = penaltySpeed // 立即加速到Penalty速度
+        
+        // 1秒后恢复到正常速度
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            withAnimation(.easeInOut(duration: 0.3)) {
+                fallingSpeed = baseSpeed // 恢复到原本的速度
             }
-        } else if fallingSpeed >= 0.002 {
-            fallingSpeed -= 0.002 / 60
-            createSpeed -= 0.002 / 60
+            isPenaltyActive = false // 重置Penalty状态
         }
     }
     private func lastScoreCalculate() {
@@ -611,6 +685,12 @@ struct GameView: View {
             return Color.white
         } else {
             return Color.red
+        }
+    }
+    private func showScoreMessage() {
+        scoreMessage += 1.0
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            scoreMessage -= 1.0
         }
     }
 }

@@ -15,7 +15,7 @@ struct PointPlusTimeView: View {
     var body: some View {
         
         HStack {
-            Text("消化量増加中")
+            Text("スコア増加中")
                 .opacity(0.5)
             Text("残り時間:")
             Text("\(Int(pointUpTimeCount))")

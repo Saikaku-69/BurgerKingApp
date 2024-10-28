@@ -11,19 +11,23 @@ struct PooView: View {
     var body: some View {
         
         ZStack {
-            ForEach(0..<3,id: \.self) { _ in
+            ForEach(0..<1,id: \.self) { _ in
                 Image("ghost")
+//                Image(pooImage())
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width:pooSize())
-                    .position(pooPosition())
+//                    .frame(width:pooSize())
+                    .frame(width:400)
+//                    .position(pooPosition())
+                    .position(x:UIScreen.main.bounds.width/2,
+                              y:UIScreen.main.bounds.height/2)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     private func pooSize() -> CGFloat {
-        let pooSizeWidth = CGFloat(Int.random(in: 200...500))
+        let pooSizeWidth = CGFloat(Int.random(in: 300...400))
         return pooSizeWidth
     }
     
