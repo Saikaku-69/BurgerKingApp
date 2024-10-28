@@ -30,7 +30,7 @@ struct GameResultView: View {
         let countstr = [
             countStr(imgName:"Burger", Txt:"消化したバーガー:",data:"\(countdata.getBurgerCount)個"),
             countStr(imgName: "GoldBurger",Txt:"ゴールドバーガー:",data:"\(countdata.getGoldBurgerCount)個"),
-            countStr(imgName: "grafup", Txt:"消化量増加持続時間:",data:"\(Int(countdata.bonusTime))秒"),
+            countStr(imgName: "grafup", Txt:"スコア増加持続時間:",data:"\(Int(countdata.bonusTime))秒"),
             countStr(imgName: "clock", Txt:"トータルゲーム時間:",data:"\(Int(countdata.totalGameTime))秒")
         ]
         
