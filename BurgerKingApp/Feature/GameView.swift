@@ -30,6 +30,8 @@ struct GameView: View {
     @State private var charChange:Bool = true
     @State private var closePopover:Bool = false
     @State private var checkPopover:Bool = false
+    @State private var scoreMessage:Double = 0.0
+    @State private var goldBurgerMSG:Bool = false
     //スコアup中のTimer
     @State private var grafUpTime: Double = 0
     @State private var grafTimeOpacity: Double = 0.0
@@ -168,6 +170,7 @@ struct GameView: View {
                         .foregroundColor(scoreColor ? Color.red : Color.white)
                         .fontWeight(.bold)
                         .opacity(0.9)
+                        //Item Message
                         VStack {
                             if bonusTimeTxt {
                                 PointPlusTimeView(pointUpTimeCount: $grafUpTime)
@@ -199,16 +202,33 @@ struct GameView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(height:playerFrame)
-                            .position(x:playerPositionX.width + dragPositionX.width + 10,y:playerPositionY - 40)
+                            .position(x:playerPositionX.width + dragPositionX.width + 10,
+                                      y:playerPositionY - 40)
                             .opacity(playerOpacity)
                     } else {
                         Image("ManLight")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(height:playerFrame)
-                            .position(x:playerPositionX.width + dragPositionX.width + 10,y:playerPositionY - 40)
+                            .position(x:playerPositionX.width + dragPositionX.width + 10,
+                                      y:playerPositionY - 40)
                             .opacity(playerOpacity)
                     }
+                    //スコア増加Message
+                    if goldBurgerMSG {
+                        Text("+10")
+                            .foregroundColor(.red)
+                            .opacity(scoreMessage)
+                            .position(x:playerPositionX.width + dragPositionX.width + 20,
+                                      y:playerPositionY - 100)
+                    } else {
+                        Text("+20")
+                            .foregroundColor(.red)
+                            .opacity(scoreMessage)
+                            .position(x:playerPositionX.width + dragPositionX.width + 20,
+                                      y:playerPositionY - 100)
+                    }
+                    
                     //当たる判定用mainObject
                     Rectangle()
                         .fill(.red)
@@ -522,9 +542,11 @@ struct GameView: View {
                 } else if itemName.imageName == "hatena" {
                     let randomNum = Int.random(in: 1...100)
                     GetBurger.remove(at: index)
+                    goldBurgerMSG = false
                     if randomNum < 67 {
                         generateImpactFeedback(for: .heavy)
                         score += 20
+                        showScoreMessage()
                     } else {
                         generateErrorFeedback()
                         fallingSpeed = penaltySpeed
@@ -532,6 +554,7 @@ struct GameView: View {
                 }else if itemName.imageName == "GoldBurger" {
                     generateImpactFeedback(for: .light)
                     GetBurger.remove(at: index)
+                    goldBurgerMSG = true
                     withAnimation(.linear(duration:0.2)) {
                         score += 10
                     }
@@ -622,6 +645,12 @@ struct GameView: View {
             return Color.white
         } else {
             return Color.red
+        }
+    }
+    private func showScoreMessage() {
+        scoreMessage += 1.0
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            scoreMessage -= 1.0
         }
     }
 }
