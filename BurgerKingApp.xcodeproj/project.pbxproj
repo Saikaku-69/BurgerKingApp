@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		7F19D2EE2CBFE405009745DD /* PooView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F19D2ED2CBFE405009745DD /* PooView.swift */; };
 		7F19D2F02CBFF805009745DD /* GameResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F19D2EF2CBFF805009745DD /* GameResultView.swift */; };
-		7F2275052CC1238C00F00A0D /* OpenningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2275042CC1238B00F00A0D /* OpenningView.swift */; };
+		7F2275052CC1238C00F00A0D /* OpenningSampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2275042CC1238B00F00A0D /* OpenningSampleView.swift */; };
 		7F2275072CC12A5400F00A0D /* PlayerInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2275062CC12A5400F00A0D /* PlayerInfoView.swift */; };
 		7F2AF5BD2CC799D7002651A8 /* RuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2AF5BC2CC799D7002651A8 /* RuleView.swift */; };
 		7F4AA1C72CCCE9EA00271E87 /* ClockMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4AA1C62CCCE9EA00271E87 /* ClockMessageView.swift */; };
@@ -25,12 +25,14 @@
 		7F91E09F2CBB81AD0017CD64 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F91E09E2CBB81AD0017CD64 /* GameView.swift */; };
 		7FB54BCD2CC523A40065A852 /* RankingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB54BCC2CC523A40065A852 /* RankingView.swift */; };
 		7FB54BD12CC539240065A852 /* MusicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB54BD02CC539240065A852 /* MusicView.swift */; };
+		7FB6B0702CD0D9A2009C3832 /* OpenningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB6B06F2CD0D9A2009C3832 /* OpenningView.swift */; };
+		7FB6B0722CD0E118009C3832 /* EnterUserNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FB6B0712CD0E118009C3832 /* EnterUserNameView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		7F19D2ED2CBFE405009745DD /* PooView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PooView.swift; sourceTree = "<group>"; };
 		7F19D2EF2CBFF805009745DD /* GameResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameResultView.swift; sourceTree = "<group>"; };
-		7F2275042CC1238B00F00A0D /* OpenningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenningView.swift; sourceTree = "<group>"; };
+		7F2275042CC1238B00F00A0D /* OpenningSampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenningSampleView.swift; sourceTree = "<group>"; };
 		7F2275062CC12A5400F00A0D /* PlayerInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerInfoView.swift; sourceTree = "<group>"; };
 		7F2AF5BC2CC799D7002651A8 /* RuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleView.swift; sourceTree = "<group>"; };
 		7F4AA1C62CCCE9EA00271E87 /* ClockMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClockMessageView.swift; sourceTree = "<group>"; };
@@ -49,6 +51,8 @@
 		7F91E09E2CBB81AD0017CD64 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		7FB54BCC2CC523A40065A852 /* RankingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingView.swift; sourceTree = "<group>"; };
 		7FB54BD02CC539240065A852 /* MusicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicView.swift; sourceTree = "<group>"; };
+		7FB6B06F2CD0D9A2009C3832 /* OpenningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenningView.swift; sourceTree = "<group>"; };
+		7FB6B0712CD0E118009C3832 /* EnterUserNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterUserNameView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,7 +69,6 @@
 		7F3F4A822CC09E51003DA38B /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				7F2275042CC1238B00F00A0D /* OpenningView.swift */,
 				7F2275062CC12A5400F00A0D /* PlayerInfoView.swift */,
 				7F5A9DE42CC24FA2009EC03D /* PointPlusTimeView.swift */,
 				7F5A9DE82CC44D7B009EC03D /* ColorView.swift */,
@@ -107,6 +110,8 @@
 				7F91E08F2CBB7E190017CD64 /* BurgerKingAppApp.swift */,
 				7F91E0912CBB7E190017CD64 /* ContentView.swift */,
 				7F5A9DE62CC42382009EC03D /* PopoverTestView.swift */,
+				7F2275042CC1238B00F00A0D /* OpenningSampleView.swift */,
+				7FB6B06E2CD0D953009C3832 /* v2.1.0 */,
 				7F3F4A822CC09E51003DA38B /* UI */,
 				7F91E09D2CBB81900017CD64 /* Feature */,
 				7F52E6412CC60F4F0078BEAB /* Music */,
@@ -135,6 +140,15 @@
 				7F52E6492CC615E80078BEAB /* Funky Cat.mp3 */,
 			);
 			path = Feature;
+			sourceTree = "<group>";
+		};
+		7FB6B06E2CD0D953009C3832 /* v2.1.0 */ = {
+			isa = PBXGroup;
+			children = (
+				7FB6B06F2CD0D9A2009C3832 /* OpenningView.swift */,
+				7FB6B0712CD0E118009C3832 /* EnterUserNameView.swift */,
+			);
+			path = v2.1.0;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -214,15 +228,17 @@
 				7F19D2EE2CBFE405009745DD /* PooView.swift in Sources */,
 				7F5A9DE52CC24FA3009EC03D /* PointPlusTimeView.swift in Sources */,
 				7F2AF5BD2CC799D7002651A8 /* RuleView.swift in Sources */,
-				7F2275052CC1238C00F00A0D /* OpenningView.swift in Sources */,
+				7F2275052CC1238C00F00A0D /* OpenningSampleView.swift in Sources */,
 				7F5A9DE92CC44D7B009EC03D /* ColorView.swift in Sources */,
 				7F91E09F2CBB81AD0017CD64 /* GameView.swift in Sources */,
 				7FB54BD12CC539240065A852 /* MusicView.swift in Sources */,
 				7F4AA1C72CCCE9EA00271E87 /* ClockMessageView.swift in Sources */,
 				7F2275072CC12A5400F00A0D /* PlayerInfoView.swift in Sources */,
+				7FB6B0722CD0E118009C3832 /* EnterUserNameView.swift in Sources */,
 				7F5A9DE72CC42382009EC03D /* PopoverTestView.swift in Sources */,
 				7F91E0902CBB7E190017CD64 /* BurgerKingAppApp.swift in Sources */,
 				7F19D2F02CBFF805009745DD /* GameResultView.swift in Sources */,
+				7FB6B0702CD0D9A2009C3832 /* OpenningView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

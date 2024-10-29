@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct OpenningView: View {
+struct OpenningSampleView: View {
     //Openning effects Test
     @State private var createBurgers: [Bool] = Array(repeating: false, count: 5)
     @State private var positions: [CGPoint] = Array(repeating: .zero, count: 5)
@@ -71,5 +71,5 @@ struct OpenningView: View {
 }
 
 #Preview {
-    OpenningView()
+    OpenningSampleView()
 }

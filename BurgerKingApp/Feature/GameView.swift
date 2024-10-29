@@ -38,7 +38,7 @@ struct GameView: View {
     @State private var grafTimeOpacity: Double = 0.0
     @AppStorage("lastScoreKey") private var lastScore: Int = 0
     @State private var score:Int = 0
-    @State private var gameTimeCount: Double = 30
+    @State private var gameTimeCount: Double = 5
     @State private var getScore:Int = 1
     @State private var getTime:Double = 3
     //確率 6:4, 40 / item(5) = 8;
@@ -94,6 +94,9 @@ struct GameView: View {
     @State private var showMusicSheet:Bool = false
     @State private var resetDisable:Bool = false
     @State private var showRuleView:Bool = false
+    
+    //v2.1.0
+    @State private var enterName:Bool = false
     
     var body: some View {
         ZStack {
@@ -295,7 +298,7 @@ struct GameView: View {
                 .frame(width: gameScreenWidth,height: 50)
                 
             }
-            
+            //ゲームが終了の時表示するtxt
             ZStack {
                 Rectangle()
                     .fill(.black)
@@ -305,6 +308,13 @@ struct GameView: View {
                     .foregroundColor(.white)
             }
             .opacity(backgroundOpacity)
+            .onTapGesture {
+                enterNameAfter()
+            }
+            //ユーザー名を入力するView
+            if enterName {
+                EnterUserNameView(showResult: $enterName)
+            }
             
             if gameStartButton {
                 VStack {
@@ -484,18 +494,24 @@ struct GameView: View {
                 backgroundOpacity += 1.0
                 playerOpacity = 0.0
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                charChange = true
-                hStackCount = 0
-                gameOver = true
-                backgroundOpacity = 0
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    withAnimation(.linear(duration:1)) {
-                        resultOpacity += 1.0
-                    }
-                }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                enterName = true
             }
         }
+    }
+    private func enterNameAfter() {
+        //名前を入力した後に行う処理
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            charChange = true
+            hStackCount = 0
+            gameOver = true
+            backgroundOpacity = 0
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                withAnimation(.linear(duration:1)) {
+                    resultOpacity += 1.0
+                }
+            }
+//        }
     }
     private func initialGame() {
         gameOver = false
@@ -508,7 +524,7 @@ struct GameView: View {
         countdata.getGoldBurgerCount = 0
         countdata.totalGameTime = 30
         countdata.bonusTime = 0
-        gameTimeCount = 30
+        gameTimeCount = 5
         playerPositionY = UIScreen.main.bounds.height-200
         playerPositionX.width = UIScreen.main.bounds.width/2 - 30
         playerOpacity = 1.0
