@@ -86,11 +86,10 @@ struct GameView: View {
     @State private var gameOver:Bool = false
     @State private var scoreColor:Bool = false
     @State private var resultChanged:Bool = true
-    @State private var moveToPlayInfoView:Bool = false
     @State private var showMusicSheet:Bool = false
     @State private var resetDisable:Bool = false
     @State private var showRuleView:Bool = false
-    
+    @State private var showRankView:Bool = false
     //v2.1.0
     @State private var enterName:Bool = false
     
@@ -111,14 +110,14 @@ struct GameView: View {
                     HStack {
                         if !resetDisable {
                             Button(action: {
-                                moveToPlayInfoView = true
+                                showRuleView = false
+                                showRankView.toggle()
                             }, label: {
                                 VStack(alignment:.leading, spacing: 0) {
-                                    Image(systemName: "arrow.backward")
-                                    Text("Back")
+                                    Image(systemName: "medal.star.fill")
                                 }
                                 .opacity(0.7)
-                                .font(.caption)
+                                .font(.system(size:30))
                             })
                         }
                         Spacer()
@@ -365,6 +364,12 @@ struct GameView: View {
                             showRuleView = false
                         }
                 }
+                if showRankView {
+                    TitleRankView()
+                        .onTapGesture {
+                            showRankView = false
+                        }
+                }
             }
             
             if gameOver {
@@ -397,9 +402,6 @@ struct GameView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .fullScreenCover(isPresented: $moveToPlayInfoView) {
-            PlayerInfoView()
-        }
         .sheet(isPresented: $showMusicSheet) {
             MusicView()
                 .presentationDetents([.medium])
