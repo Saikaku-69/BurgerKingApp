@@ -44,7 +44,7 @@ struct GameView: View {
     
     @State private var grafUpProbability:Int = 8
     @State private var goldBurgerProbability:Int = 12
-    @State private var clockProbability:Int = 15
+    @State private var clockProbability:Int = 20
     @State private var vagetableProbability:Int = 12
     @State private var hammerProbability:Int = 0
     @State private var misteryProbability:Int = 10
@@ -532,7 +532,7 @@ struct GameView: View {
         score = 0
         countdata.getBurgerCount = 0
         countdata.getGoldBurgerCount = 0
-        countdata.totalGameTime = 30
+        countdata.totalGameTime = 10
         countdata.bonusTime = 0
         gameTimeCount = 10
         playerPositionY = UIScreen.main.bounds.height-200
@@ -699,10 +699,9 @@ struct GameView: View {
                 grafTimeOpacity = 0.0
             }
         }
-        print (countdata.totalGameTime)
-        if countdata.totalGameTime < 30 {
-            clockProbability = 15
-        } else if countdata.totalGameTime < 60 {
+        if countdata.totalGameTime <= 30 {
+            clockProbability = 20
+        } else if countdata.totalGameTime <= 60 {
             clockProbability = 10
         } else {
             clockProbability = 5
