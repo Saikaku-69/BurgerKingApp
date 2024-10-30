@@ -35,6 +35,16 @@ struct RankingView:View {
                 .offset(y:110)
             
             VStack(alignment: .leading) {
+                HStack {
+                    Spacer()
+                    Text("タップして")
+                    Text("データ")
+                        .underline()
+                    Text("を見る")
+                    Spacer()
+                }
+                .foregroundColor(.white)
+                .font(.caption)
                 ForEach(0..<min(rankArray.count, 4),id: \.self) { index in
                     HStack {
                         Image(trophies[index])

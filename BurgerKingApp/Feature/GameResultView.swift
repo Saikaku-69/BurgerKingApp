@@ -10,7 +10,7 @@ import SwiftUI
 class countData:ObservableObject {
     static let shared = countData()
     @Published var getBurgerCount:Int = 0
-    @Published var totalGameTime:Double = 30
+    @Published var totalGameTime:Double = 10
     @Published var getGoldBurgerCount:Int = 0
     @Published var bonusTime:Double = 0
 }
@@ -46,6 +46,16 @@ struct GameResultView: View {
                 .frame(width:200)
                 .offset(y:110)
             VStack(alignment: .leading) {
+                HStack {
+                    Spacer()
+                    Text("タップして")
+                    Text("ランキング")
+                        .underline()
+                    Text("を見る")
+                    Spacer()
+                }
+                .foregroundColor(.white)
+                .font(.caption)
                 ForEach(countstr) { item in
                     HStack {
                         Image(item.imgName)
