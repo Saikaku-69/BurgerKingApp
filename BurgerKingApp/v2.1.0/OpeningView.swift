@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct OpenningView: View {
+struct OpeningView: View {
     @State private var fontOpacity:Double = 0
     @State private var moveToGameView:Bool = false
     var body: some View {
@@ -42,5 +42,5 @@ struct OpenningView: View {
 }
 
 #Preview {
-    OpenningView()
+    OpeningView()
 }
