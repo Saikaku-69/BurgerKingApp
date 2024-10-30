@@ -40,6 +40,7 @@ struct RankingView:View {
                     Text("タップして")
                     Text("データ")
                         .underline()
+                        .foregroundColor(.blue)
                     Text("を見る")
                     Spacer()
                 }

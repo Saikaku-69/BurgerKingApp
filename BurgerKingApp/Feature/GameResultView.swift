@@ -51,6 +51,7 @@ struct GameResultView: View {
                     Text("タップして")
                     Text("ランキング")
                         .underline()
+                        .foregroundColor(.blue)
                     Text("を見る")
                     Spacer()
                 }
