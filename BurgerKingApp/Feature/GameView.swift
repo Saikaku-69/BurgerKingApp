@@ -25,7 +25,6 @@ struct GameView: View {
     @ObservedObject var playerRank = PlayerRank.data
     @State private var backgroundColor: Color = .backgroundColor
     @State private var backgroundOpacity:Double = 0.0
-    @State private var resultOpacity:Double = 0.0
     @State private var bonusTimeTxt:Bool = false
     @State private var charChange:Bool = true
     @State private var closePopover:Bool = false
@@ -33,18 +32,19 @@ struct GameView: View {
     @State private var scoreMessage:Double = 0.0
     @State private var goldBurgerMSG:Bool = false
     @State private var goodMessage:Bool = false
+    @State private var resultTextToggle:Bool = true
     //スコアup中のTimer
     @State private var grafUpTime: Double = 0
     @State private var grafTimeOpacity: Double = 0.0
     @AppStorage("lastScoreKey") private var lastScore: Int = 0
     @State private var score:Int = 0
-    @State private var gameTimeCount: Double = 5
+    @State private var gameTimeCount: Double = 10
     @State private var getScore:Int = 1
     @State private var getTime:Double = 3
-    //確率 6:4, 40 / item(5) = 8;
+    
     @State private var grafUpProbability:Int = 8
     @State private var goldBurgerProbability:Int = 12
-    @State private var clockProbability:Int = 6
+    @State private var clockProbability:Int = 15
     @State private var vagetableProbability:Int = 12
     @State private var hammerProbability:Int = 0
     @State private var misteryProbability:Int = 10
@@ -71,10 +71,6 @@ struct GameView: View {
     @State private var pooTimer: Timer?
     @State private var pointUpTimer: Timer?
     @State private var randomColorTimer: Timer?
-    //時間止まった時の計算用タイマー
-    @State private var stopOfTime: Double = 0
-    @State private var stopOfCountTime: Double = 0
-    @State private var stopOfCountTimer: Timer?
     //落ちるスピード&生成スピード
     @State private var fallingSpeed: Double = 0.004
     @State private var baseSpeed: Double = 0.004
@@ -160,12 +156,27 @@ struct GameView: View {
                 
                 ZStack {
                     VStack { //GameScreen
-                        HStack(spacing:0) {
-                            Text("LAST GAME SCORE: \(lastScore)")
-                                .foregroundColor(.white)
-                                .fontWeight(.bold)
-                                .opacity(0.5)
+                        
+                        if !enterName {
+                            withAnimation(.linear(duration:1)) {
+                                HStack(spacing:0) {
+                                    Text("LAST GAME SCORE: \(lastScore)")
+                                        .foregroundColor(.white)
+                                        .fontWeight(.bold)
+                                        .opacity(0.5)
+                                }
+                            }
+                        } else {
+                            withAnimation(.linear(duration:1)) {
+                                HStack(spacing:0) {
+                                    Text("YOUR GAME SCORE: \(score)")
+                                        .foregroundColor(.white)
+                                        .fontWeight(.bold)
+                                        .opacity(0.5)
+                                }
+                            }
                         }
+                        
                         HStack {
                             Image("Burger")
                                 .resizable()
@@ -308,44 +319,46 @@ struct GameView: View {
                     .foregroundColor(.white)
             }
             .opacity(backgroundOpacity)
-            .onTapGesture {
-                enterNameAfter()
-            }
-            //ユーザー名を入力するView
-            if enterName {
-                EnterUserNameView(showResult: $enterName)
-            }
             
             if gameStartButton {
                 VStack {
+                    
                     Button(action: {
                         gameStartButton = false
                         startGame()
                         resetDisable = true
                     }) {
                         Text("ゲーム開始")
-                            .font(.system(size: 18))
                             .foregroundColor(.white)
-                            .padding()
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .padding(14) // default is 16points
                             .overlay(
                                 RoundedRectangle(cornerRadius: 15)
                                     .stroke(Color.white, lineWidth: 1)
                             )
+                            .minimumScaleFactor(0.5) // 设置文本缩放最小值
                     }
+                    .frame(width: 120, height: 50) //按钮大小
+                    .padding(.bottom, 3)
                     
                     Button(action: {
                         showRuleView = true
                     }) {
                         Text("アイテム一覧")
-                            .font(.system(size: 15))
                             .foregroundColor(.white)
-                            .padding()
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .padding(13)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 15)
                                     .stroke(Color.white, lineWidth: 1)
                             )
+                            .minimumScaleFactor(0.5) // 设置文本缩放最小值
                     }
+                    .frame(width: 120, height: 50) //按钮大小
+                    
                 }
+                
+                
                 if showRuleView {
                     RuleView()
                         .onTapGesture {
@@ -365,20 +378,20 @@ struct GameView: View {
                 .onTapGesture {
                     resultChanged.toggle()
                 }
-                
-                Button(action: {
-                    initialGame()
-                    resetDisable = false
-                }) {
-                    Text("Homeに戻る")
-                        .fontWeight(.bold)
-                        .padding(5)
-                        .background(Color.clear)
-                        .cornerRadius(50)
-                }
-                .offset(y:200)
-                .opacity(resultOpacity)
+                Text("Homeに戻る")
+                    .fontWeight(.bold)
+                    .foregroundColor(.blue)
+                    .onTapGesture {
+                        initialGame()
+                        resetDisable = false
+                    }
+                    .offset(y:210)
             }
+            //ユーザー名を入力するView
+            if enterName {
+                EnterUserNameView(showResult: $enterName)
+            }
+            
             if showPoo {
                 PooView()
             }
@@ -494,41 +507,35 @@ struct GameView: View {
                 backgroundOpacity += 1.0
                 playerOpacity = 0.0
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 enterName = true
+                lastScoreCalculate()
+                enterNameAfter()
             }
         }
     }
     private func enterNameAfter() {
         //名前を入力した後に行う処理
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            charChange = true
-            hStackCount = 0
-            gameOver = true
-            backgroundOpacity = 0
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                withAnimation(.linear(duration:1)) {
-                    resultOpacity += 1.0
-                }
-            }
-//        }
+        charChange = true
+        hStackCount = 0
+        backgroundOpacity = 0
+        gameOver = true
     }
+    
     private func initialGame() {
         gameOver = false
         gameStartButton = true
         checkPopover = false
         resultChanged = true
-        lastScoreCalculate()
         score = 0
         countdata.getBurgerCount = 0
         countdata.getGoldBurgerCount = 0
         countdata.totalGameTime = 30
         countdata.bonusTime = 0
-        gameTimeCount = 5
+        gameTimeCount = 10
         playerPositionY = UIScreen.main.bounds.height-200
         playerPositionX.width = UIScreen.main.bounds.width/2 - 30
         playerOpacity = 1.0
-        resultOpacity = 0
     }
     private func stopAllTimer() {
         countTimer?.invalidate()
@@ -690,6 +697,14 @@ struct GameView: View {
                 grafTimeOpacity = 0.0
             }
         }
+        print (countdata.totalGameTime)
+        if countdata.totalGameTime < 30 {
+            clockProbability = 15
+        } else if countdata.totalGameTime < 60 {
+            clockProbability = 10
+        } else {
+            clockProbability = 5
+        }
     }
     private func getTimeAnimation() {
         withAnimation(.linear(duration: 0.5)) {
@@ -697,7 +712,7 @@ struct GameView: View {
         }
     }
     private func getTimeColor(value: Double) -> Color {
-        if value > 5 {
+        if value > 3 {
             return Color.white
         } else {
             return Color.red

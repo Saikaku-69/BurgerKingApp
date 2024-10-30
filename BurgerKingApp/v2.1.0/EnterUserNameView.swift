@@ -7,12 +7,6 @@
 
 import SwiftUI
 
-//class PlayerRank:ObservableObject {
-//    static let data = PlayerRank()
-//    @Published var name:String = ""
-//    @Published var score:Int = 0
-//}
-
 struct EnterUserNameView: View {
     @ObservedObject var playerRank = PlayerRank.data
     @State private var playerName: String = ""
@@ -33,6 +27,7 @@ struct EnterUserNameView: View {
                 .onTapGesture {
                     isFocused = false
                 }
+            
             VStack {
                 Section(header: Text("プレイヤー名")
                     .foregroundColor(.white)
@@ -68,7 +63,7 @@ struct EnterUserNameView: View {
                         logoMove()
                     }
                     playerRank.name = playerName
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                         showResult = false
                     }
                 }) {
@@ -95,8 +90,12 @@ struct EnterUserNameView: View {
                     .background(Color.black)
                     .offset(x:10,y: logoOffset)
             }
-            
+            .onTapGesture {
+                isFocused = false
+            }
         }
+        .frame(width:UIScreen.main.bounds.width-50,
+               height:UIScreen.main.bounds.height/1.4)
     }
     
     private func logoMove() {
