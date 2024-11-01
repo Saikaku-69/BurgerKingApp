@@ -12,6 +12,7 @@ struct BurgerKingAppApp: App {
     var body: some Scene {
         WindowGroup {
             OpeningView()
+                .environmentObject(PlayerRank.data)
         }
     }
 }
