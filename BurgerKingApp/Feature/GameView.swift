@@ -221,6 +221,16 @@ struct GameView: View {
                             .position(x:playerPositionX.width + dragPositionX.width + 10,
                                       y:playerPositionY - 40)
                             .opacity(playerOpacity)
+                            .gesture(
+                                DragGesture()
+                                    .updating($dragPositionX) { move, value, _ in
+                                        value = move.translation
+                                    }
+                                    .onEnded { value in
+                                        playerPositionX.width += value.translation.width
+                                    }
+                            )
+                            .disabled(playerDisable)
                     } else {
                         Image("ManLight")
                             .resizable()
@@ -229,6 +239,16 @@ struct GameView: View {
                             .position(x:playerPositionX.width + dragPositionX.width + 10,
                                       y:playerPositionY - 40)
                             .opacity(playerOpacity)
+                            .gesture(
+                                DragGesture()
+                                    .updating($dragPositionX) { move, value, _ in
+                                        value = move.translation
+                                    }
+                                    .onEnded { value in
+                                        playerPositionX.width += value.translation.width
+                                    }
+                            )
+                            .disabled(playerDisable)
                     }
                     
                     //当たる判定用mainObject
