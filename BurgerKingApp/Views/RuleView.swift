@@ -16,7 +16,7 @@ struct Items: Identifiable {
 let items = [
     Items(img: "Burger", explanation: "スコア+1"),
     Items(img: "GoldBurger", explanation: "スコア+10"),
-    Items(img: "grafup", explanation: "時間内スコア2倍"),
+    Items(img: "graphup", explanation: "時間内スコア2倍"),
     Items(img: "clock", explanation: "ゲーム時間+3秒"),
     Items(img: "hammer", explanation: "土台1階段破壊"),
     Items(img: "hatena", explanation: "ランダム"),
@@ -70,6 +70,5 @@ struct RuleView: View {
 }
 
 #Preview {
-//    RuleView()
-    GameView()
+    RuleView()
 }
