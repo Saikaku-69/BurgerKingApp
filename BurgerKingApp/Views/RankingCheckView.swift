@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TitleRankView: View {
+struct RankingCheckView: View {
     @EnvironmentObject var playerRank: PlayerRank
     @AppStorage("nameArray") var nameArrayData: String = ""
     @AppStorage("rankArray") var rankArrayData: String = ""
@@ -66,18 +66,14 @@ struct TitleRankView: View {
     }
 }
 
-//#Preview {
-//    TitleRankView()
-//}
-
-struct TitleRankView_Previews: PreviewProvider {
+struct RankingCheckView_Previews: PreviewProvider {
     static var previews: some View {
         let dummyNameArray = ["Alice", "Bob", "Charlie", "David"]
         let dummyRankArray = [100, 85, 75, 60]
-        TitleRankView()
+        RankingCheckView()
             .environmentObject(PlayerRank.data) // ダミーの環境オブジェクト
             .onAppear {
-                TitleRankView_Previews.loadDummyData(nameArray: dummyNameArray, rankArray: dummyRankArray)
+                RankingCheckView_Previews.loadDummyData(nameArray: dummyNameArray, rankArray: dummyRankArray)
             }
     }
     
