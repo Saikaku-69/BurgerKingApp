@@ -7,31 +7,31 @@
 
 import SwiftUI
 
-class countData:ObservableObject {
-    static let shared = countData()
+class CountData:ObservableObject {
+    static let shared = CountData()
     @Published var getBurgerCount:Int = 0
     @Published var totalGameTime:Double = 10
     @Published var getGoldBurgerCount:Int = 0
     @Published var bonusTime:Double = 0
 }
 
-struct countStr:Identifiable {
+struct CountStr:Identifiable {
     let id = UUID()
     var imgName: String
     var Txt: String
     var data: String
 }
 
-struct GameResultView: View {
-    @ObservedObject var countdata = countData.shared
+struct ResultView: View {
+    @ObservedObject var countdata = CountData.shared
     
     var body: some View {
         
         let countstr = [
-            countStr(imgName:"Burger", Txt:"消化したバーガー:",data:"\(countdata.getBurgerCount)個"),
-            countStr(imgName: "GoldBurger",Txt:"ゴールドバーガー:",data:"\(countdata.getGoldBurgerCount)個"),
-            countStr(imgName: "grafup", Txt:"スコア増加持続時間:",data:"\(Int(countdata.bonusTime))秒"),
-            countStr(imgName: "clock", Txt:"トータルゲーム時間:",data:"\(Int(countdata.totalGameTime))秒")
+            CountStr(imgName:"Burger", Txt:"消化したバーガー:",data:"\(countdata.getBurgerCount)個"),
+            CountStr(imgName: "GoldBurger",Txt:"ゴールドバーガー:",data:"\(countdata.getGoldBurgerCount)個"),
+            CountStr(imgName: "graphup", Txt:"スコア増加持続時間:",data:"\(Int(countdata.bonusTime))秒"),
+            CountStr(imgName: "clock", Txt:"トータルゲーム時間:",data:"\(Int(countdata.totalGameTime))秒")
         ]
         
         ZStack {
@@ -89,5 +89,5 @@ struct GameResultView: View {
 }
 
 #Preview {
-    GameResultView()
+    ResultView()
 }

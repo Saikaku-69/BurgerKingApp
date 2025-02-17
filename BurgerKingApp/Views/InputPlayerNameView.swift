@@ -1,28 +1,27 @@
 //
-//  PlayerInfoView.swift
+//  EnterUserNameView.swift
 //  BurgerKingApp
 //
-//  Created by cmStudent on 2024/10/17.
+//  Created by cmStudent on 2024/10/29.
 //
 
 import SwiftUI
 
-struct PlayerInfoView: View {
-    
-    //ネームをクラスに保存
+struct InputPlayerNameView: View {
     @ObservedObject var playerRank = PlayerRank.data
     @State private var playerName: String = ""
-    @State private var moveToPlay: Bool = false
-    @State private var logoSize: CGFloat = 200
     @FocusState private var isFocused: Bool
+    @Binding var showResult: Bool
+    @State private var logoSize: CGFloat = 200
     @State private var logoOffset:CGFloat = 70
     @State private var waitTime:Double = 0.5
+    
     let maxNameLength = 10
+    
     //Test 3DRotation
     @State private var isFlipped = false
     
     var body: some View {
-        
         ZStack {
             Color.black.ignoresSafeArea()
                 .onTapGesture {
@@ -62,13 +61,13 @@ struct PlayerInfoView: View {
                     isFocused = false
                     DispatchQueue.main.asyncAfter(deadline: .now() + waitTime) {
                         logoMove()
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            moveToPlay = true
-                        }
                     }
                     playerRank.name = playerName
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        showResult = false
+                    }
                 }) {
-                    Text("遊びに行く")
+                    Text("結果を見る")
                 }
                 .padding(.top)
                 .disabled(playerName.isEmpty)
@@ -91,15 +90,12 @@ struct PlayerInfoView: View {
                     .background(Color.black)
                     .offset(x:10,y: logoOffset)
             }
-            
+            .onTapGesture {
+                isFocused = false
+            }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .onDisappear() {
-            isFocused = false
-        }
-        .fullScreenCover(isPresented:$moveToPlay) {
-            GameView()
-        }
+        .frame(width:UIScreen.main.bounds.width-50,
+               height:UIScreen.main.bounds.height/1.4)
     }
     
     private func logoMove() {
@@ -107,9 +103,8 @@ struct PlayerInfoView: View {
             logoOffset -= 80
         }
     }
-    
 }
 
 #Preview {
-    PlayerInfoView()
+    InputPlayerNameView(showResult: .constant(false))
 }
